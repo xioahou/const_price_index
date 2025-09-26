@@ -100,3 +100,9 @@ export const getCheckedCompareApi = (ids) => {
     }
   })
 }
+export const getCategoryApi = () => {
+  return instance({
+    url: 'Comparison/historyList',
+    method: 'get',
+  })
+}

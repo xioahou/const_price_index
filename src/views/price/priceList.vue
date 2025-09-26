@@ -42,11 +42,15 @@
             </el-table-column>
             <el-table-column prop="price_list" label="询价信息" width="885">
               <template #default="scope">
-                <el-table :data="scope.row.price_list" :border="true">
+                <el-table :data="scope.row.price_list" :border="true" :row-class-name="priceRowClassName"
+                  :key="scope.row.id">
                   <el-table-column label="pk" width="100">
                     <template #default="scope">
-                      <el-button type="primary" text @click="addPs(scope.row)">
+                      <el-button type="primary" text @click="addPs(scope.row)" v-if="!filterPk([], scope.row.id)">
                         加入比价
+                      </el-button>
+                      <el-button v-else type="danger" text @click="cancelPk(scope.row)">
+                        取消pk
                       </el-button>
                     </template>
                   </el-table-column>
@@ -342,13 +346,13 @@
       </template>
     </el-dialog>
     <!-- 比价列表弹窗 -->
-    <el-drawer v-model="drawer" title="询价比对" direction="rtl" size="60%" class="priceDrawer">
+    <el-drawer v-model="drawer" title="询价比对" direction="rtl" size="60%" class="priceDrawer" @close="closeDrawer">
       <el-card v-for="(item, index) in compareList" :key="index">
         <template #header>
           <p><span>{{ item.title }}</span> <span>{{ item.cas }}</span> <span>{{ item.company_title }}</span>
             <span>每日询价</span>
           </p>
-          <el-icon @click="delCompare(item.id)">
+          <el-icon @click="delCompare(item)">
             <CircleClose />
           </el-icon>
         </template>
@@ -374,6 +378,42 @@
         </el-table>
       </el-card>
       <el-button type="primary" style="width: 100%;" @click="pkDoor" :disabled="pkIds.length === 0">去比对>></el-button>
+      <!-- 最近浏览 -->
+      <el-button type="success" plain style="margin:20px 0 10px 0;" @click="hisBrow">最近浏览</el-button>
+      <template v-if="hisBrowList.length > 0">
+        <el-card v-for="(item, index) in hisBrowList" :key="index">
+          <template #header>
+            <p><span>{{ item.title }}</span> <span>{{ item.cas }}</span> <span>{{ item.company_title }}</span>
+              <span>每日询价</span>
+            </p>
+          </template>
+
+          <el-table :data="item.price_list" style="width: 100%" border :row-class-name="hisRowClassName">
+            <!-- <el-table-column type="selection" width="55" /> -->
+            <el-table-column prop="time" label="维护日期" width="100" />
+            <el-table-column prop="num" label="数量" width="80" />
+            <el-table-column prop="unit" label="单位" />
+            <el-table-column prop="price" label="价格" />
+            <el-table-column prop="unit_info" label="价格单位" />
+            <el-table-column prop="specs" label="规格" />
+            <el-table-column prop="package" label="包装" />
+            <el-table-column prop="remark" label="备注" />
+            <el-table-column prop="admin_name" label="维护人" />
+            <el-table-column label="操作">
+              <template #default="scope">
+                <el-button text @click="addPs(scope.row, true)" type="primary"
+                  v-if="!filterPk(scope.row.id, false)">+比价</el-button>
+                <el-button text type="primary" v-else @click="delCompare(scope.row.id)">-取消</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-card>
+        <el-button style="width: 100%;">暂无更多数据</el-button>
+      </template>
+
+
+
+
     </el-drawer>
     <!-- 全屏对话框 -->
     <el-dialog v-model="dialogVisible" fullscreen class="multiDialog">
@@ -472,7 +512,7 @@ import { ElMessage } from 'element-plus'
 import { CircleClose } from '@element-plus/icons-vue'
 import { ElMessageBox } from 'element-plus'
 import Sortable from 'sortablejs';
-import { getListApi, addLikeApi, getNewPriceListApi, getPriceTotalApi, addCompareListApi, getCompareTotalApi, getCompareListApi, delCompareListApi, getCheckedCompareApi } from '../../api/homeList.js'
+import { getListApi, addLikeApi, getNewPriceListApi, getPriceTotalApi, addCompareListApi, getCompareTotalApi, getCompareListApi, delCompareListApi, getCheckedCompareApi, getCategoryApi } from '../../api/homeList.js'
 // import { useAuthStore } from '../../stores/user'
 
 import { ref, computed, watch, nextTick, onMounted } from 'vue'
@@ -686,21 +726,30 @@ async function searchBtn() {
 
   formData.value.page = 1
   await getListData()
+  filterPk()
 }
 const selectRadio = ref(false)
 const ids = ref([])
 const compareTotal = ref(0)
 const drawer = ref(false)
-async function addPs(row) {
+//加入比价
+async function addPs(row, flage = false) {
   ids.value = []
   console.log(row);
   ids.value.push(row.id)
   const res = await addCompareListApi(ids.value)
-  getCompareTotal()
-
+  await getCompareTotal() //伙计总数量
+  await getCompareList() //重新获取比价列表中数据
+  setAddId()
+  await getListData()//刷新列表,让加入比价的id存储到compareIdList
 
   console.log(res);
+  if (flage) { //如果是从最近浏览点的+比价，重新获取比价列表
+    console.log('从最近浏览点的+比价');
 
+    await getCompareList()
+
+  }
 }
 async function getCompareTotal() {
   const resTotal = await getCompareTotalApi()
@@ -710,9 +759,10 @@ async function getCompareTotal() {
     ElMessage.error(resTotal.msg)
   }
 }
-getCompareTotal()
 
-const compareList = ref([])
+
+const compareList = ref([]) //已在比价列表中数组
+//点击pk
 async function openPriceDrawer() {
   drawer.value = true
   await getCompareList()
@@ -721,16 +771,19 @@ async function openPriceDrawer() {
 //获取比价列表
 async function getCompareList() {
   const res = await getCompareListApi()
-  // console.log(res);
+  console.log('比价列表中数据', res);
   if (res.code === 200) {
     // console.log(res);
     compareList.value = res.data.list
 
   }
 }
+getCompareList()
 //删除比价列表
 const delIds = ref([])
 async function delCompare(ids) {
+  console.log(ids);
+
 
   ElMessageBox.confirm(
     '移除该比价吗?',
@@ -742,22 +795,41 @@ async function delCompare(ids) {
     }
   )
     .then(async () => {
-      delIds.value.push(ids)
+
+      if (ids && Array.isArray(ids.price_list) && ids.price_list.length > 0) {
+        console.log(111);
+
+        ids.price_list.forEach(item => {
+          console.log(item.id);
+
+          delIds.value.push(item.id)
+        })
+      } else {
+        delIds.value.push(ids)
+      }
+
+
       const res = await delCompareListApi(delIds.value)
+      console.log('删除后', compareIdList.value);
+      compareIdList.value = compareIdList.value.filter(id => !delIds.value.includes(id)) //删除后更新compareIdList，让其不包含已经删除的id
+
       if (res.code === 200) {
         console.log(res);
         delIds.value = []
+        await getCompareTotal()
         ElMessage({
           type: 'success',
           message: '移除成功',
         })
-        getCompareList()
+        delIds.value = []
+        await getCompareList() //重新刷新已在比价列表数据
+        await getListData() //刷新列表,让移除比价的id从compareIdList中移除
       } else {
         ElMessage.error(res.msg)
       }
-
     })
     .catch(() => {
+      delIds.value = []
       ElMessage({
         type: 'info',
         message: '移除失败',
@@ -790,9 +862,7 @@ async function pkDoor() {
   const res = await getCheckedCompareApi(priceListIds.join(','))
   if (res.code === 200) {
     pkTableList.value = res.data.list
-    nextTick(() => {
-      initDraggable();
-    })
+
   }
   console.log(priceListIds);
   dialogVisible.value = true
@@ -812,7 +882,6 @@ const fields = [
   { label: "维护人", key: "admin_name" }
 ];
 const tableRef = ref(null);
-let sortableInstance = null;
 const columns = computed(() => {
   const cols = [];
   pkTableList.value.forEach((p, pIdx) => {
@@ -877,51 +946,99 @@ const productColSpan = (product) => {
   return product.inquiry.reduce((sum, inq) => sum + inq.price_list.length, 0);
 };
 
-// 初始化拖拽
-onMounted(() => {
-  initDraggable();
-});
-function initDraggable() {
-  if (!tableRef.value) return;
-
-  const firstRow = tableRef.value.querySelector('thead tr:first-child');
-  if (!firstRow) return;
-
-  // 销毁之前的实例（如果存在）
-  if (sortableInstance) {
-    sortableInstance.destroy();
+//最近浏览
+const hisBrowList = ref([]) //最近浏览数据列表
+const hisBrowId = ref([]) //最近浏览数据id
+async function hisBrow() {
+  const res = await getCategoryApi()
+  if (res.code === 200) {
+    hisBrowList.value = res.data.list
   }
-
-  // 创建新的Sortable实例
-  sortableInstance = Sortable.create(firstRow, {
-    animation: 150,
-    handle: '.sort-target',
-    draggable: '.sort-target',
-    ghostClass: 'sortable-ghost',
-    onEnd: handleDragEnd
-  });
 }
-function handleDragEnd(evt) {
-  const { oldIndex, newIndex } = evt;
-
-  // 如果位置没有变化，则不做处理
-  if (oldIndex === newIndex) return;
-
-  // 重新排序pkTableList
-  const newOrder = [...pkTableList.value];
-  const [movedItem] = newOrder.splice(oldIndex, 1);
-  newOrder.splice(newIndex, 0, movedItem);
-
-  // 更新数据
-  pkTableList.value = newOrder;
-
-  // 由于数据更新导致DOM重新渲染，我们需要在nextTick中重新初始化拖拽
-  nextTick(() => {
-    initDraggable();
-  });
+watch(hisBrowList, (newVal) => {  //每次最近浏览数据变换都重新获取id
+  if (newVal.length) {
+    console.log('最近浏览数据变换了');
+    console.log(hisBrowList.value);
+    hisBrowList.value.forEach(item => {
+      item.price_list.forEach(price => {
+        if (!hisBrowId.value.includes(price.id)) { // 已有就不加
+          hisBrowId.value.push(price.id)
+        }
+      })
+    })
+  }
+})
+//处理最近浏览
+function closeDrawer() {
+  hisBrowList.value = []
 }
+//存储比对列表价格id
+getCompareTotal()
+
+const compareIdList = ref([])
+function setAddId() { //拿到已在比价列表中的id
+  // compareIdList.value = []
+  compareList.value.forEach(item => {
+    item.price_list.forEach(price => {
+      if (!compareIdList.value.includes(price.id)) { // 已有就不加
+        compareIdList.value.push(price.id)
+      }
+    })
+  })
+  console.log(compareIdList.value);
+}
+watch(compareList, (newVal) => {
+  if (newVal.length) {
+    console.log('变换了');
+    console.log(compareList.value);
+
+    setAddId()
+  }
+})
+function filterPk(his, compare) {
+  console.log('compare', compare);
+  console.log('his', his);
 
 
+  if (compare) {
+    return compareIdList.value.includes(compare)
+  }
+  if (his) {
+    return compareIdList.value.includes(his)
+  }
+}
+async function cancelPk(row) {
+  const delIdList = []
+  delIdList.push(row.id)
+  compareIdList.value = compareIdList.value.filter(id => id !== row.id)
+  const res = await delCompareListApi(delIdList)
+  if (res.code === 200) {
+    //重新获取比价列表中数据
+
+    await getCompareList()//重新刷新已在比价列表数据
+
+    await getCompareTotal()//获取已在比价列表中数量
+
+    // setAddId() //重新获取已在比价列表中的id
+    console.log('id', compareIdList.value);
+    await getListData()//刷新列表,让加入比价的id存储到compareIdList
+
+
+
+  } else {
+    console.log('取消失败');
+
+  }
+}
+//表格高亮
+function priceRowClassName({ row }) {
+  // 与按钮渲染的判断保持一致：filterPk([], row.id) 为 true 时高亮
+  return filterPk([], row.id) ? 'pk-cancel-row' : ''
+}
+function hisRowClassName({ row }) {
+  // 与按钮渲染的判断保持一致：filterPk([], row.id) 为 true 时高亮
+  return filterPk(row.id, '') ? 'pk-cancel-row' : ''
+}
 </script>
 
 <style lang="less" scoped>
@@ -1025,6 +1142,11 @@ function handleDragEnd(evt) {
   }
 
   :deep(.el-table) {
+    .pk-cancel-row {
+      background-color: #e0b14b !important;
+      /* 你可以换成任意颜色 */
+    }
+
     .top-align-col {
       display: table-cell !important;
       /* 去掉 flex */
@@ -1033,18 +1155,7 @@ function handleDragEnd(evt) {
       line-height: normal;
       /* 防止撑开 */
       padding-top: 4px;
-      /* 根据需求加点间距 */
-      // .el-table__cell {
-      //   display: table-cell !important;
-      //   /* 去掉 flex */
-      //   vertical-align: top;
-      //   /* 顶部对齐 */
-      //   line-height: normal;
-      //   /* 防止撑开 */
-      //   padding-top: 4px;
-      //   /* 根据需求加点间距 */
-      //   /* 顶部对齐 */
-      // }
+
     }
   }
 
