@@ -20,8 +20,8 @@
       </div>
     </div>
 
-    <el-table style="width: 100%" :data="tableData" v-loading="loading" element-loading-text="加载中...">
-      <el-table-column label="产品信息" width="170" class-name="top-align-col">
+    <el-table style="width: 100%;height: 60%;" :data="tableData" v-loading="loading" element-loading-text="加载中...">
+      <el-table-column label="产品信息" width="170" class-name="top-align-col" align="center">
         <template #default="scope">
           <p class="tag">名称:{{ scope.row.title }}</p>
           <p class="tag">CAS号:{{ scope.row.cas }}</p>
@@ -1044,6 +1044,8 @@ function hisRowClassName({ row }) {
 <style lang="less" scoped>
 .priceList {
   padding: 20px;
+  height: 100%;
+  box-sizing: border-box;
 
   :deep(.search) {
     display: flex;

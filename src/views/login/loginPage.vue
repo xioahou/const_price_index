@@ -4,14 +4,14 @@
       <img src="../../common//assets/img/logo蓝字.png" alt="">
       <el-form label-width="80px" label-position="left" :model="formData" :rules="rules" ref="ruleFormRef">
         <el-form-item label="账号" prop="username">
-          <el-input placeholder="请输入账号" v-model="formData.username" />
+          <el-input placeholder="请输入账号" v-model="formData.username" @keyup.enter="getLogin(ruleFormRef)" />
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input placeholder="请输入密码" show-password type="password" v-model="formData.password" />
+          <el-input placeholder="请输入密码" show-password type="password" v-model="formData.password"
+            @keyup.enter="getLogin(ruleFormRef)" />
         </el-form-item>
       </el-form>
-      <el-button type="primary" class="sub_btn" @click="getLogin(ruleFormRef)"
-        @keyup.enter="getLogin(ruleFormRef)">登录</el-button>
+      <el-button type="primary" class="sub_btn" @click="getLogin(ruleFormRef)">登录</el-button>
 
     </div>
 
@@ -64,7 +64,6 @@ const getLogin = async (formEl) => {
     }
   })
 }
-
 </script>
 
 <style lang="less" scoped>
