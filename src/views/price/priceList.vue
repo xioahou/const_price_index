@@ -575,7 +575,7 @@ const tableData = ref([
 ])
 function isDocxFile(url) {
   const ext = url.split("?")[0].split(".").pop().toLowerCase()
-  const officeExts = ["doc", "docx", "xls", "xlsx", "ppt", "pptx", "txt"]
+  const officeExts = ["pdf", "doc", "docx", "xls", "xlsx"]
   return officeExts.includes(ext)
 }
 //编辑
