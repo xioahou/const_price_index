@@ -46,10 +46,11 @@
                   :key="scope.row.id">
                   <el-table-column label="pk" width="100">
                     <template #default="scope">
-                      <el-button type="primary" text @click="addPs(scope.row)" v-if="!filterPk([], scope.row.id)">
+                      <el-button type="primary" text @click="addPs(scope.row)" v-if="!filterPk([], scope.row.id)"
+                        disabled>
                         加入比价
                       </el-button>
-                      <el-button v-else type="danger" text @click="cancelPk(scope.row)">
+                      <el-button v-else type="danger" text @click="cancelPk(scope.row)" disabled>
                         取消pk
                       </el-button>
                     </template>
@@ -364,7 +365,7 @@
       <el-card v-for="(item, index) in compareList" :key="index">
         <template #header>
           <p><span>{{ item.title }}</span> <span>{{ item.cas }}</span> <span>{{ item.company_title }}</span>
-            <span>每日询价</span>
+            <span>{{ item.type === 1 ? '每日询价' : '国际采购' }}</span>
           </p>
           <el-icon @click="delCompare(item)">
             <CircleClose />
@@ -779,8 +780,10 @@ async function getCompareTotal() {
 const compareList = ref([]) //已在比价列表中数组
 //点击pk
 async function openPriceDrawer() {
-  drawer.value = true
-  await getCompareList()
+  ElMessage.warning('功能维护中')
+  return
+  // drawer.value = true
+  // await getCompareList()
 
 }
 //获取比价列表
