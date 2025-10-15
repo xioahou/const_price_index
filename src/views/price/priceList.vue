@@ -62,7 +62,6 @@
                   <el-table-column prop="unit_info" label="人民币价格单位" width="130" />
                   <el-table-column prop="dollar_price" label="美元价格" width="100" />
                   <el-table-column prop="dollar_unit_info" label="美元价格单位" width="130" />
-
                   <el-table-column prop="specs" label="规格" width="100" />
                   <el-table-column prop="package" label="包装" width="100" />
                   <el-table-column prop="remark" label="备注" width="100" />
