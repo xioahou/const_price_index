@@ -57,8 +57,10 @@
                   <el-table-column prop="time" label="维护时间" width="100" />
                   <el-table-column prop="num" label="数量" width="80" />
                   <el-table-column prop="unit" label="单位" width="80" />
-                  <el-table-column prop="price" label="价格" width="100" />
-                  <el-table-column prop="unit_info" label="价格单位" width="100" />
+                  <el-table-column prop="dollar_price" label="美元价格" width="100" />
+                  <el-table-column prop="dollar_unit_info" label="美元价格单位" width="130" />
+                  <el-table-column prop="price" label="人名币价格" width="100" />
+                  <el-table-column prop="unit_info" label="人名币价格单位" width="130" />
                   <el-table-column prop="specs" label="规格" width="100" />
                   <el-table-column prop="package" label="包装" width="100" />
                   <el-table-column prop="remark" label="备注" width="100" />
@@ -148,14 +150,26 @@
             <el-input v-model="row.unit" placeholder="单位" :disabled="row.editable" />
           </template>
         </el-table-column>
-        <el-table-column prop="price" label="价格" width="180">
+        <el-table-column prop="price" label="美元价格" width="180">
+          <template #default="{ row }">
+            <!-- <el-input v-model="row.price" placeholder="价格" :disabled="row.editable" /> -->
+            <el-input-number v-model="row.dollar_price" :precision="2" :step="0.1" :disabled="row.editable"
+              controls-position="right" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="dollar_unit_info" label="美元价格单位" width="110">
+          <template #default="{ row }">
+            <el-input v-model="row.unit_info" placeholder="价格单位" :disabled="row.editable" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="price" label="人名币价格" width="180">
           <template #default="{ row }">
             <!-- <el-input v-model="row.price" placeholder="价格" :disabled="row.editable" /> -->
             <el-input-number v-model="row.price" :precision="2" :step="0.1" :disabled="row.editable"
               controls-position="right" />
           </template>
         </el-table-column>
-        <el-table-column prop="unit_info" label="价格单位" width="110">
+        <el-table-column prop="unit_info" label="人名币价格单位" width="110">
           <template #default="{ row }">
             <el-input v-model="row.unit_info" placeholder="价格单位" :disabled="row.editable" />
           </template>
@@ -511,11 +525,10 @@ import { Search } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { CircleClose } from '@element-plus/icons-vue'
 import { ElMessageBox } from 'element-plus'
-import Sortable from 'sortablejs';
 import { getListApi, addLikeApi, getNewPriceListApi, getPriceTotalApi, addCompareListApi, getCompareTotalApi, getCompareListApi, delCompareListApi, getCheckedCompareApi, getCategoryApi } from '../../api/homeList.js'
 // import { useAuthStore } from '../../stores/user'
 
-import { ref, computed, watch, nextTick, onMounted } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 const searchLoading = ref(false)
 
@@ -552,6 +565,8 @@ const addPriceForm = ref({
     unit: "",
     price: "",
     unit_info: "",
+    dollar_price: "",
+    dollar_unit_info: "",
     specs: "",
     package: "",
     is_show: 1,
@@ -728,7 +743,7 @@ async function searchBtn() {
   await getListData()
   filterPk()
 }
-const selectRadio = ref(false)
+
 const ids = ref([])
 const compareTotal = ref(0)
 const drawer = ref(false)
