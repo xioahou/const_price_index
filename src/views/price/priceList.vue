@@ -20,7 +20,8 @@
       </div>
     </div>
 
-    <el-table style="width: 100%;height: 60%;" :data="tableData" v-loading="loading" element-loading-text="加载中...">
+    <el-table style="width: 100%" :data="tableData" v-loading="loading" element-loading-text="加载中..." height="650"
+      table-layout="fixed">
       <el-table-column label="产品信息" width="170" class-name="top-align-col" align="center">
         <template #default="scope">
           <p class="tag">名称:{{ scope.row.title }}</p>
@@ -29,7 +30,7 @@
       </el-table-column>
       <el-table-column prop="inquiry_list">
         <template #default="scope">
-          <el-table :data="scope.row.inquiry_list">
+          <el-table :data="scope.row.inquiry_list" table-layout="fixed">
             <el-table-column prop="company_title" label="公司名称" width="200" fixed="left">
               <template #default="scope">
                 <p>{{ scope.row.company_title }}</p>
@@ -40,40 +41,40 @@
                 <p>{{ scope.row.type === 1 ? '每日询价' : "国际采购" }}</p>
               </template>
             </el-table-column>
-            <el-table-column prop="price_list" label="询价信息" width="885">
+            <el-table-column prop="price_list" label="询价信息" width="1450">
               <template #default="scope">
-                <el-table :data="scope.row.price_list" :border="true" :row-class-name="priceRowClassName"
-                  :key="scope.row.id">
-                  <el-table-column label="pk" width="100">
+                <el-table :data="scope.row.price_list" :row-class-name="priceRowClassName" :key="scope.row.id">
+                  <el-table-column label="pk" width="150" align="center">
                     <template #default="scope">
-                      <el-button type="primary" text @click="addPs(scope.row)" v-if="!filterPk([], scope.row.id)">
+                      <el-button type="primary" text @click="addPs(scope.row)" v-if="!filterPk([], scope.row.id)"
+                        disabled>
                         加入比价
                       </el-button>
-                      <el-button v-else type="danger" text @click="cancelPk(scope.row)">
+                      <el-button v-else type="danger" text @click="cancelPk(scope.row)" disabled>
                         取消pk
                       </el-button>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="time" label="维护时间" width="100" />
-                  <el-table-column prop="num" label="数量" width="80" />
-                  <el-table-column prop="unit" label="单位" width="80" />
-                  <el-table-column prop="price" label="人民币价格" width="100" />
-                  <el-table-column prop="unit_info" label="人民币价格单位" width="130" />
-                  <el-table-column prop="dollar_price" label="美元价格" width="100" />
-                  <el-table-column prop="dollar_unit_info" label="美元价格单位" width="130" />
-                  <el-table-column prop="specs" label="规格" width="100" />
-                  <el-table-column prop="package" label="包装" width="100" />
-                  <el-table-column prop="remark" label="备注" width="100" />
-                  <el-table-column prop="admin_name" label="维护人" width="100" />
+                  <el-table-column prop="time" label="维护时间" width="120" align="center" />
+                  <el-table-column prop="num" label="数量" width="100" align="center" />
+                  <el-table-column prop="unit" label="单位" width="150" align="center" />
+                  <el-table-column prop="price" label="人民币价格" width="100" align="center" />
+                  <el-table-column prop="unit_info" label="人民币价格单位" width="130" align="center" />
+                  <el-table-column prop="dollar_price" label="美元价格" width="100" align="center" />
+                  <el-table-column prop="dollar_unit_info" label="美元价格单位" width="130" align="center" />
+                  <el-table-column prop="specs" label="规格" width="100" align="center" />
+                  <el-table-column prop="package" label="包装" width="100" align="center" />
+                  <el-table-column prop="remark" label="备注" width="100" show-overflow-tooltip align="center" />
+                  <el-table-column prop="admin_name" label="维护人" width="120" align="center" />
                 </el-table>
               </template>
             </el-table-column>
-            <el-table-column prop="contact_list" label="联系方式" width="375">
+            <el-table-column prop="contact_list" label="联系方式" width="375" align="center">
               <template #default="scope">
-                <el-table :data="scope.row.contact_list" :border="true">
-                  <el-table-column prop="name" label="联系人" width="100" />
-                  <el-table-column prop="phone" label="联系电话" width="150" />
-                  <el-table-column prop="email" label="邮箱" width="100" />
+                <el-table :data="scope.row.contact_list" table-layout="fixed">
+                  <el-table-column prop="name" label="联系人" width="100" align="center" />
+                  <el-table-column prop="phone" label="联系电话" width="150" align="center" />
+                  <el-table-column prop="email" label="邮箱" width="100" align="center" />
                 </el-table>
               </template>
             </el-table-column>
@@ -780,8 +781,10 @@ const compareList = ref([]) //已在比价列表中数组
 //点击pk
 async function openPriceDrawer() {
 
-  drawer.value = true
-  await getCompareList()
+  // drawer.value = true
+  // await getCompareList()
+  ElMessage.error('该功能暂未开放')
+  return
 
 }
 //获取比价列表
@@ -1060,7 +1063,7 @@ function hisRowClassName({ row }) {
 <style lang="less" scoped>
 .priceList {
   padding: 20px;
-  height: 100%;
+
   box-sizing: border-box;
 
   :deep(.search) {
@@ -1163,6 +1166,10 @@ function hisRowClassName({ row }) {
     .pk-cancel-row {
       background-color: #e0b14b !important;
       /* 你可以换成任意颜色 */
+    }
+
+    .el-table__header-wrapper colgroup col {
+      pointer-events: none !important;
     }
 
     .top-align-col {

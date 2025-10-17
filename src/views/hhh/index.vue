@@ -1,109 +1,385 @@
 <template>
-  <div style="padding:20px;">
-    <el-collapse v-model="activeNames">
-      <el-collapse-item v-for="(row, index) in priceList" :key="row.id"
-        :title="`数量：${row.num} / 单位：${row.unit} / 价格：${row.price}`" :name="index">
-        <el-card>
-          <el-form label-width="80px">
-            <el-form-item label="数量">
-              <el-input-number v-model="row.num" :precision="2" :step="0.1" />
-            </el-form-item>
+  <div class="hhh">
+    <el-table :data="tableData" style="width: 100%">
+      <el-table-column label="产品信息" width="180">
+        <template #default="scope">
+          <p class="tag">名称:{{ scope.row.title }}</p>
+          <p class="tag">CAS号:{{ scope.row.cas }}</p>
+        </template>
+      </el-table-column>
+      <el-table-column label="公司名称" width="180">
+        <template #default="scope">
+          <el-table :data="scope.row.inquiry_list" style="width: 100%" class="no-border-table">
+            <el-table-column prop="company_title">
 
-            <el-form-item label="单位">
-              <el-input v-model="row.unit" />
-            </el-form-item>
-
-            <el-form-item label="价格">
-              <el-input-number v-model="row.price" :precision="2" :step="0.1" />
-            </el-form-item>
-
-            <el-form-item label="价格单位">
-              <el-input v-model="row.unit_info" />
-            </el-form-item>
-
-            <el-form-item label="规格">
-              <el-input v-model="row.specs" />
-            </el-form-item>
-
-            <el-form-item label="包装">
-              <el-input v-model="row.package" />
-            </el-form-item>
-
-            <el-form-item label="备注">
-              <el-input v-model="row.remark" type="textarea" autosize resize="none" />
-            </el-form-item>
-
-            <el-form-item label="维护人">
-              <el-input :value="row.add_type === 1 ? row.user_name : row.admin_name" disabled />
-            </el-form-item>
-
-            <el-form-item label="显示状态">
-              <el-switch v-model="row.is_show" :active-value="1" :inactive-value="2"
-                style="--el-switch-on-color: #13ce66; --el-switch-off-color: #cccccc" />
-            </el-form-item>
-
-            <el-form-item>
-              <el-button type="danger" @click="removeRow(index)">删除</el-button>
-            </el-form-item>
-          </el-form>
-        </el-card>
-      </el-collapse-item>
-    </el-collapse>
+            </el-table-column>
+          </el-table>
+        </template>
+      </el-table-column>
+      <el-table-column label="类型" width="180">
+        <template #default="scope">
+          <el-table :data="scope.row.inquiry_list" style="width: 100%" class="no-border-table">
+            <el-table-column prop="type">
+              <template #default="scope">
+                <span>{{ scope.row.type === 1 ? '每日询价' : '国际采购' }}</span>
+              </template>
+            </el-table-column>
+          </el-table>
+        </template>
+      </el-table-column>
+      <el-table-column label="详情信息">
+        <template #default="scope">
+          <el-table :data="scope.row.inquiry_list" class="no-border-table">
+            <el-table-column>
+              <template #default="subScope">
+                <el-table :data="subScope.row.price_list" class="no-border-table">
+                  <el-table-column label="维护时间" prop="time" />
+                  <el-table-column label="数量" prop="num" />
+                  <el-table-column label="单位" prop="unit_info" />
+                  <el-table-column label="价格" prop="price" />
+                  <el-table-column label="价格单位" prop="unit_info" />
+                  <el-table-column label="美元价格" prop="dollar_price" />
+                  <el-table-column label="美元价格单位" prop="dollar_unit_info" />
+                  <el-table-column label="规格" prop="specs" />
+                  <el-table-column label="包装" prop="package" />
+                  <el-table-column label="备注" prop="remark" />
+                  <el-table-column label="维护人" prop="admin_name" />
+                </el-table>
+              </template>
+            </el-table-column>
+            <el-table-column>
+              <template #default="conScope">
+                <el-table :data="conScope.row.contact_list" class="no-border-table">
+                  <el-table-column label="联系电话" prop="phone" />
+                  <el-table-column label="联系人" prop="name" />
+                  <el-table-column label="联系邮箱" prop="email" />
+                </el-table>
+              </template>
+            </el-table-column>
+          </el-table>
+        </template>
+      </el-table-column>
+      <el-table-column label="备注"></el-table-column>
+      <el-table-column label="所在国家" prop="country"></el-table-column>
+    </el-table>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue"
-
-const activeNames = ref([]) // 默认全部收起
-
-// 模拟数据
-const priceList = ref([
+const tableData = [
   {
-    id: 1,
-    num: 10,
-    unit: "kg",
-    price: 25.5,
-    unit_info: "元/kg",
-    specs: "优等品",
-    package: "袋装",
-    remark: "适合批发",
-    add_type: 1,
-    user_name: "张三",
-    admin_name: "管理员A",
-    is_show: 1,
+    "cas": "11",
+    "id_list": "108051",
+    "max_price_time": 1760341184,
+    "title": "11",
+    "inquiry_list": [
+      {
+        "id": 108051,
+        "title": "11",
+        "type": 1,
+        "cas": "11",
+        "company_title": "111",
+        "remark": "",
+        "country": "",
+        "website": "",
+        "address": "",
+        "company_else": "",
+        "synonym": "",
+        "attachment": "",
+        "price_time": "2025-10-13",
+        "admin_name": "王成",
+        "price_list": [
+          {
+            "id": 146101,
+            "inquiry_id": 108051,
+            "num": 1.4,
+            "unit": "kg",
+            "price": "0.90",
+            "unit_info": "fdf",
+            "is_show": 1,
+            "dollar_price": null,
+            "dollar_unit_info": "",
+            "specs": "dfd",
+            "package": "fdf",
+            "salesperson": "",
+            "period": "",
+            "remark": "dfdf",
+            "admin_id": 145,
+            "time": "2025-10-13",
+            "admin_name": "王成"
+          },
+          {
+            "id": 146099,
+            "inquiry_id": 108051,
+            "num": 0.6,
+            "unit": "编辑了",
+            "price": "0.70",
+            "unit_info": "11",
+            "is_show": 1,
+            "dollar_price": null,
+            "dollar_unit_info": "",
+            "specs": "11",
+            "package": "11",
+            "salesperson": "",
+            "period": "",
+            "remark": "111",
+            "admin_id": 145,
+            "time": "2025-10-13",
+            "admin_name": "王成"
+          },
+          {
+            "id": 146098,
+            "inquiry_id": 108051,
+            "num": 0.8,
+            "unit": "1111",
+            "price": "0.70",
+            "unit_info": "11",
+            "is_show": 1,
+            "dollar_price": null,
+            "dollar_unit_info": "",
+            "specs": "111",
+            "package": "",
+            "salesperson": "",
+            "period": "",
+            "remark": "",
+            "admin_id": 145,
+            "time": "2025-10-13",
+            "admin_name": "王成"
+          },
+          {
+            "id": 146097,
+            "inquiry_id": 108051,
+            "num": 1.7,
+            "unit": "deref",
+            "price": "1.30",
+            "unit_info": "dfdff",
+            "is_show": 1,
+            "dollar_price": null,
+            "dollar_unit_info": "",
+            "specs": "fdfff",
+            "package": "",
+            "salesperson": "",
+            "period": "",
+            "remark": "",
+            "admin_id": 145,
+            "time": "2025-10-13",
+            "admin_name": "王成"
+          },
+          {
+            "id": 146092,
+            "inquiry_id": 108051,
+            "num": 0.9,
+            "unit": "1111",
+            "price": "1.30",
+            "unit_info": "11",
+            "is_show": 1,
+            "dollar_price": null,
+            "dollar_unit_info": "",
+            "specs": "1",
+            "package": "11",
+            "salesperson": "",
+            "period": "",
+            "remark": "111",
+            "admin_id": 145,
+            "time": "2025-10-13",
+            "admin_name": "王成"
+          }
+        ],
+        "contact_list": [
+          {
+            "id": 134900,
+            "inquiry_id": 108051,
+            "name": "fddfdf",
+            "phone": "fdf",
+            "email": "dfdfdf"
+          },
+          {
+            "id": 134899,
+            "inquiry_id": 108051,
+            "name": "11",
+            "phone": "11",
+            "email": "11"
+          },
+          {
+            "id": 134898,
+            "inquiry_id": 108051,
+            "name": "11",
+            "phone": "11",
+            "email": "111"
+          },
+          {
+            "id": 134897,
+            "inquiry_id": 108051,
+            "name": "11",
+            "phone": "1",
+            "email": "111"
+          },
+          {
+            "id": 134896,
+            "inquiry_id": 108051,
+            "name": "111",
+            "phone": "11",
+            "email": "111"
+          },
+          {
+            "id": 134892,
+            "inquiry_id": 108051,
+            "name": "1111",
+            "phone": "1111",
+            "email": ""
+          },
+          {
+            "id": 134891,
+            "inquiry_id": 108051,
+            "name": "11",
+            "phone": "1",
+            "email": "111"
+          }
+        ]
+      }
+    ]
   },
   {
-    id: 2,
-    num: 5,
-    unit: "箱",
-    price: 120,
-    unit_info: "元/箱",
-    specs: "整箱",
-    package: "纸箱",
-    remark: "易碎品，小心搬运",
-    add_type: 2,
-    user_name: "",
-    admin_name: "管理员B",
-    is_show: 2,
-  },
-  {
-    id: 3,
-    num: 1,
-    unit: "瓶",
-    price: 8.8,
-    unit_info: "元/瓶",
-    specs: "500ml",
-    package: "玻璃瓶",
-    remark: "饮用水",
-    add_type: 1,
-    user_name: "李四",
-    admin_name: "管理员C",
-    is_show: 1,
-  },
-])
+    "cas": "111",
+    "id_list": "108048,108050",
+    "max_price_time": 1760339825,
+    "title": "111",
+    "inquiry_list": [
+      {
+        "id": 108050,
+        "title": "1211",
+        "type": 2,
+        "cas": "111",
+        "company_title": "***",
+        "remark": "",
+        "country": "",
+        "website": "",
+        "address": "",
+        "company_else": "",
+        "synonym": "",
+        "attachment": "",
+        "price_time": "2025-10-13",
+        "admin_name": "王成",
+        "price_list": [
+          {
+            "id": 146096,
+            "inquiry_id": 108050,
+            "num": 1.8,
+            "unit": "121",
+            "price": "0.90",
+            "unit_info": "111",
+            "is_show": 2,
+            "dollar_price": "***",
+            "dollar_unit_info": "***",
+            "specs": "",
+            "package": "",
+            "salesperson": "11111",
+            "period": "111111",
+            "remark": "",
+            "admin_id": 145,
+            "time": "2025-10-13",
+            "admin_name": "王成"
+          },
+          {
+            "id": 146090,
+            "inquiry_id": 108050,
+            "num": 1.3,
+            "unit": "1111",
+            "price": "0.90",
+            "unit_info": "111111",
+            "is_show": 2,
+            "dollar_price": "***",
+            "dollar_unit_info": "***",
+            "specs": "",
+            "package": "",
+            "salesperson": "111",
+            "period": "1111",
+            "remark": "",
+            "admin_id": 145,
+            "time": "2025-10-13",
+            "admin_name": "王成"
+          }
+        ],
+        "contact_list": [
+          {
+            "id": 134895,
+            "inquiry_id": 108050,
+            "name": "1231",
+            "phone": "111",
+            "email": "1111"
+          }
+        ]
+      },
+      {
+        "id": 108048,
+        "title": "111",
+        "type": 2,
+        "cas": "111",
+        "company_title": "***",
+        "remark": "",
+        "country": "",
+        "website": "",
+        "address": "",
+        "company_else": "",
+        "synonym": "",
+        "attachment": "",
+        "price_time": "2025-10-13",
+        "admin_name": "王成",
+        "price_list": [
+          {
+            "id": 146088,
+            "inquiry_id": 108048,
+            "num": 1,
+            "unit": "111",
+            "price": "0.90",
+            "unit_info": "11111",
+            "is_show": 2,
+            "dollar_price": "***",
+            "dollar_unit_info": "***",
+            "specs": "",
+            "package": "",
+            "salesperson": "111",
+            "period": "111",
+            "remark": "",
+            "admin_id": 145,
+            "time": "2025-10-13",
+            "admin_name": "王成"
+          }
+        ],
+        "contact_list": []
+      }
+    ]
+  }
+]
 
-const removeRow = (index) => {
-  priceList.value.splice(index, 1)
-}
+
 </script>
+
+<style lang="less" scoped>
+.hhh {
+  .el-table .el-table__row:hover {
+    background-color: transparent !important;
+  }
+
+  /* 👇 针对嵌套表格去掉单元格边框 */
+  .no-border-table ::v-deep(.el-table__cell) {
+    border: none !important;
+  }
+
+  /* 如果还想去掉 el-table 自带的顶部分割线 (::before) */
+  .no-border-table ::v-deep(.el-table::before) {
+    content: none !important;
+  }
+
+  .no-border-table ::v-deep(.el-table__header-wrapper th) {
+    border: none !important;
+  }
+
+  .no-border-table ::v-deep(.el-table::before),
+  .no-border-table ::v-deep(.el-table__inner-wrapper::before),
+  .no-border-table ::v-deep(.el-table__inner-wrapper::after) {
+    content: none !important;
+    display: none !important;
+  }
+}
+</style>
