@@ -58,8 +58,8 @@
                   <el-table-column prop="time" label="维护时间" width="100" />
                   <el-table-column prop="num" label="数量" width="80" />
                   <el-table-column prop="unit" label="单位" width="80" />
-                  <el-table-column prop="price" label="人民币价格" width="100" />
-                  <el-table-column prop="unit_info" label="人民币价格单位" width="130" />
+                  <el-table-column prop="price" label="价格" width="100" />
+                  <el-table-column prop="unit_info" label="价格单位" width="130" />
                   <el-table-column prop="dollar_price" label="美元价格" width="100" />
                   <el-table-column prop="dollar_unit_info" label="美元价格单位" width="130" />
                   <el-table-column prop="specs" label="规格" width="100" />
@@ -148,22 +148,22 @@
         </el-table-column>
         <el-table-column prop="unit" label="单位" width="110">
           <template #default="{ row }">
-            <el-input v-model="row.unit" placeholder="单位" :disabled="row.editable" />
+            <el-input v-model="row.unit" :disabled="row.editable" />
           </template>
         </el-table-column>
-        <el-table-column prop="price" label="人民币价格" width="180">
+        <el-table-column prop="price" label="价格" width="180">
           <template #default="{ row }">
             <!-- <el-input v-model="row.price" placeholder="价格" :disabled="row.editable" /> -->
             <el-input-number v-model="row.price" :precision="2" :step="0.1" :disabled="row.editable"
               controls-position="right" />
           </template>
         </el-table-column>
-        <el-table-column prop="unit_info" label="人民币价格单位" width="110">
+        <el-table-column prop="unit_info" label="价格单位" width="110">
           <template #default="{ row }">
-            <el-input v-model="row.unit_info" placeholder="价格单位" :disabled="row.editable" />
+            <el-input v-model="row.unit_info" :disabled="row.editable" />
           </template>
         </el-table-column>
-        <el-table-column prop="price" label="美元价格" width="180">
+        <el-table-column prop="dollar_price" label="美元价格" width="180">
           <template #default="{ row }">
             <!-- <el-input v-model="row.price" placeholder="价格" :disabled="row.editable" /> -->
             <el-input-number v-model="row.dollar_price" :precision="2" :step="0.1" :disabled="row.editable"
@@ -172,33 +172,32 @@
         </el-table-column>
         <el-table-column prop="dollar_unit_info" label="美元价格单位" width="110">
           <template #default="{ row }">
-            <el-input v-model="row.unit_info" placeholder="价格单位" :disabled="row.editable" />
+            <el-input v-model="row.dollar_unit_info" :disabled="row.editable" />
           </template>
         </el-table-column>
         <el-table-column prop="salesperson" label="业务员" width="110" v-if="addPriceForm.type === 2">
           <template #default="{ row }">
-            <el-input v-model="row.salesperson" placeholder="业务员" :disabled="row.editable" />
+            <el-input v-model="row.salesperson" :disabled="row.editable" />
           </template>
         </el-table-column>
         <el-table-column prop="period" label="货期" width="110" v-if="addPriceForm.type === 2">
           <template #default="{ row }">
-            <el-input v-model="row.period" placeholder="货期" :disabled="row.editable" />
+            <el-input v-model="row.period" :disabled="row.editable" />
           </template>
         </el-table-column>
         <el-table-column prop="specs" label="规格" width="110">
           <template #default="{ row }">
-            <el-input v-model="row.specs" placeholder="规格" :disabled="row.editable" />
+            <el-input v-model="row.specs" :disabled="row.editable" />
           </template>
         </el-table-column>
         <el-table-column prop="package" label="打包" width="110">
           <template #default="{ row }">
-            <el-input v-model="row.package" placeholder="包装" :disabled="row.editable" />
+            <el-input v-model="row.package" :disabled="row.editable" />
           </template>
         </el-table-column>
         <el-table-column prop="package" label="备注" width="250">
           <template #default="{ row }">
-            <el-input v-model="row.remark" placeholder="备注" type="textarea" autosize resize="none"
-              :disabled="row.editable" />
+            <el-input v-model="row.remark" type="textarea" autosize resize="none" :disabled="row.editable" />
           </template>
         </el-table-column>
         <!-- 查看显示 -->
@@ -208,10 +207,10 @@
           </template> -->
           <template #default="{ row }">
             <template v-if="row.add_type === '1'">
-              <el-input v-model="row.user_name" placeholder="维护人" disabled />
+              <el-input v-model="row.user_name" disabled />
             </template>
             <template v-else>
-              <el-input v-model="row.admin_name" placeholder="维护人" disabled />
+              <el-input v-model="row.admin_name" disabled />
             </template>
           </template>
         </el-table-column>
@@ -1057,6 +1056,7 @@ function hisRowClassName({ row }) {
   // 与按钮渲染的判断保持一致：filterPk([], row.id) 为 true 时高亮
   return filterPk(row.id, '') ? 'pk-cancel-row' : ''
 }
+
 </script>
 
 <style lang="less" scoped>
