@@ -12,15 +12,16 @@
           </template>
         </el-input>
       </div>
-      <div class="price_car" @click="openPriceDrawer">
+      <!-- <div class="price_car" @click="openPriceDrawer">
         <span>pk</span>
         <div class="corner_marker">
           {{ compareTotal }}
         </div>
-      </div>
+      </div> -->
     </div>
 
-    <el-table style="width: 100%;height: 60%;" :data="tableData" v-loading="loading" element-loading-text="加载中...">
+    <el-table style="width: 100%;height: 75%;" :data="tableData" v-loading="loading" element-loading-text="加载中..."
+      @header-dragend="headerDrage">
       <el-table-column label="产品信息" width="170" class-name="top-align-col" align="center">
         <template #default="scope">
           <p class="tag">名称:{{ scope.row.title }}</p>
@@ -40,11 +41,11 @@
                 <p>{{ scope.row.type === 1 ? '每日询价' : "国际采购" }}</p>
               </template>
             </el-table-column>
-            <el-table-column prop="price_list" label="询价信息" width="885">
+            <el-table-column prop="price_list" label="询价信息" width="1200">
               <template #default="scope">
                 <el-table :data="scope.row.price_list" :border="true" :row-class-name="priceRowClassName"
                   :key="scope.row.id">
-                  <el-table-column label="pk" width="100">
+                  <!-- <el-table-column label="pk" width="100">
                     <template #default="scope">
                       <el-button type="primary" text @click="addPs(scope.row)" v-if="!filterPk([], scope.row.id)"
                         disabled>
@@ -54,18 +55,18 @@
                         取消pk
                       </el-button>
                     </template>
-                  </el-table-column>
-                  <el-table-column prop="time" label="维护时间" width="100" />
-                  <el-table-column prop="num" label="数量" width="80" />
-                  <el-table-column prop="unit" label="单位" width="80" />
-                  <el-table-column prop="price" label="价格" width="100" />
-                  <el-table-column prop="unit_info" label="价格单位" width="130" />
-                  <el-table-column prop="dollar_price" label="美元价格" width="100" />
-                  <el-table-column prop="dollar_unit_info" label="美元价格单位" width="130" />
-                  <el-table-column prop="specs" label="规格" width="100" />
-                  <el-table-column prop="package" label="包装" width="100" />
-                  <el-table-column prop="remark" label="备注" width="100" />
-                  <el-table-column prop="admin_name" label="维护人" width="100" />
+  </el-table-column> -->
+                  <el-table-column prop="time" label="维护时间" width="100" :resizable="false" />
+                  <el-table-column prop="num" label="数量" width="80" :resizable="false" />
+                  <el-table-column prop="unit" label="单位" width="80" :resizable="false" />
+                  <el-table-column prop="price" label="价格" width="100" :resizable="false" />
+                  <el-table-column prop="unit_info" label="价格单位" width="130" :resizable="false" />
+                  <el-table-column prop="dollar_price" label="美元价格" width="100" :resizable="false" />
+                  <el-table-column prop="dollar_unit_info" label="美元价格单位" width="130" :resizable="false" />
+                  <el-table-column prop="specs" label="规格" width="100" :resizable="false" />
+                  <el-table-column prop="package" label="包装" width="100" :resizable="false" />
+                  <el-table-column prop="remark" label="备注" width="100" :resizable="false" />
+                  <el-table-column prop="admin_name" label="维护人" width="100" :resizable="false" />
                 </el-table>
               </template>
             </el-table-column>
@@ -1056,7 +1057,11 @@ function hisRowClassName({ row }) {
   // 与按钮渲染的判断保持一致：filterPk([], row.id) 为 true 时高亮
   return filterPk(row.id, '') ? 'pk-cancel-row' : ''
 }
+function headerDrage() {
+  console.log(1111);
+  return
 
+}
 </script>
 
 <style lang="less" scoped>
