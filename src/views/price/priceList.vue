@@ -41,7 +41,7 @@
                 <p>{{ scope.row.type === 1 ? '每日询价' : "国际采购" }}</p>
               </template>
             </el-table-column>
-            <el-table-column prop="price_list" label="询价信息" width="1200">
+            <el-table-column prop="price_list" label="询价信息" width="1145">
               <template #default="scope">
                 <el-table :data="scope.row.price_list" :border="true" :row-class-name="priceRowClassName"
                   :key="scope.row.id">
