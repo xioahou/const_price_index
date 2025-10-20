@@ -36,11 +36,13 @@ const router = createRouter({
           path: 'product',
           name: 'Product',
           component: () => import('../views/product/con_product.vue')
-        }, {
-          path: 'hhh',
-          name: 'Hhh',
-          component: () => import('../views/hhh/index.vue')
         }
+
+        // ,{
+        //   path: 'hhh',
+        //   name: 'Hhh',
+        //   component: () => import('../views/hhh/index.vue')
+        // }
       ]
     },
 
