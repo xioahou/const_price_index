@@ -18,6 +18,7 @@ watch(() => route.path, (newVal) => {
   config.value.userName = getUserName() ? `${getUserName()}@DiDeu` : "DiDeu"
 
 })
+
 </script>
 
 <template>
