@@ -20,8 +20,8 @@
       </div> -->
     </div>
 
-    <el-table style="width: 100%;height: 75%;" :data="tableData" v-loading="loading" element-loading-text="加载中..."
-      @header-dragend="headerDrage">
+    <el-table style="width: 100%;" :data="tableData" v-loading="loading" element-loading-text="加载中..."
+      @header-dragend="headerDrage" height="75%">
       <el-table-column label="产品信息" width="170" class-name="top-align-col" align="center">
         <template #default="scope">
           <p class="tag">名称:{{ scope.row.title }}</p>
