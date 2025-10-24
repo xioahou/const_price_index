@@ -60,9 +60,9 @@
                   <el-table-column prop="num" label="数量" width="80" :resizable="false" />
                   <el-table-column prop="unit" label="单位" width="80" :resizable="false" />
                   <el-table-column prop="price" label="价格" width="100" :resizable="false" />
+                  <el-table-column prop="unit_info" label="价格单位" width="130" :resizable="false" />
                   <el-table-column prop="salesperson" label="业务员" width="100" :resizable="false" />
                   <el-table-column prop="periodperiod" label="货期" width="100" :resizable="false" />
-                  <el-table-column prop="unit_info" label="价格单位" width="130" :resizable="false" />
                   <el-table-column prop="dollar_price" label="美元价格" width="100" :resizable="false" />
                   <el-table-column prop="dollar_unit_info" label="美元价格单位" width="130" :resizable="false" />
                   <el-table-column prop="specs" label="规格" width="100" :resizable="false" />
