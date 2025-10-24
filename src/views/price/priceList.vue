@@ -32,8 +32,8 @@
         <template #default="scope">
           <el-table :data="scope.row.inquiry_list">
             <el-table-column prop="company_title" label="公司名称" width="200" fixed="left">
-              <template #default="scope">
-                <p>{{ scope.row.company_title }}</p>
+              <template #default="scopes">
+                <p>{{ scopes.row.company_title }}</p>
               </template>
             </el-table-column>
             <el-table-column prop="type" label="类型" width="100">
@@ -41,7 +41,7 @@
                 <p>{{ scope.row.type === 1 ? '每日询价' : "国际采购" }}</p>
               </template>
             </el-table-column>
-            <el-table-column prop="price_list" label="询价信息" width="1145">
+            <el-table-column prop="price_list" label="询价信息" width="1345">
               <template #default="scope">
                 <el-table :data="scope.row.price_list" :border="true" :row-class-name="priceRowClassName"
                   :key="scope.row.id">
@@ -60,6 +60,8 @@
                   <el-table-column prop="num" label="数量" width="80" :resizable="false" />
                   <el-table-column prop="unit" label="单位" width="80" :resizable="false" />
                   <el-table-column prop="price" label="价格" width="100" :resizable="false" />
+                  <el-table-column prop="salesperson" label="业务员" width="100" :resizable="false" />
+                  <el-table-column prop="periodperiod" label="货期" width="100" :resizable="false" />
                   <el-table-column prop="unit_info" label="价格单位" width="130" :resizable="false" />
                   <el-table-column prop="dollar_price" label="美元价格" width="100" :resizable="false" />
                   <el-table-column prop="dollar_unit_info" label="美元价格单位" width="130" :resizable="false" />
@@ -88,7 +90,7 @@
             <el-table-column prop="attachment" label="附件" width="100">
               <template #default="scope">
 
-                {{ scope.row.attachment ? scope.row.attachment.split('|').length : 0 }}
+                {{ scope.row.attachment ? scope.row.attachment.split('|').length : 0 }}个
               </template>
             </el-table-column>
             <el-table-column label="操作" width="100" fixed="right">
