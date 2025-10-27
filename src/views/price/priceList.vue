@@ -29,8 +29,8 @@
         </template>
       </el-table-column>
       <el-table-column prop="inquiry_list" width="3200" label="产品详情">
-        <template #default="scope">
-          <el-table :data="scope.row.inquiry_list">
+        <template #default="scope_inquiry">
+          <el-table :data="scope_inquiry.row.inquiry_list">
             <el-table-column prop="company_title" label="公司名称" width="200">
               <template #default="scopes">
                 <p>{{ scopes.row.company_title }}</p>
@@ -61,10 +61,14 @@
                   <el-table-column prop="unit" label="单位" width="80" :resizable="false" />
                   <el-table-column prop="price" label="价格" width="100" :resizable="false" />
                   <el-table-column prop="unit_info" label="价格单位" width="130" :resizable="false" />
-                  <el-table-column prop="salesperson" label="业务员" width="100" :resizable="false" />
-                  <el-table-column prop="periodperiod" label="货期" width="100" :resizable="false" />
-                  <el-table-column prop="dollar_price" label="美元价格" width="100" :resizable="false" />
-                  <el-table-column prop="dollar_unit_info" label="美元价格单位" width="130" :resizable="false" />
+                  <el-table-column prop="salesperson" label="业务员" width="100" :resizable="false"
+                    v-if="scope.row.type === 2" />
+                  <el-table-column prop="periodperiod" label="货期" width="100" :resizable="false"
+                    v-if="scope.row.type === 2" />
+                  <el-table-column prop="dollar_price" label="美元价格" width="100" :resizable="false"
+                    v-if="scope.row.type === 2" />
+                  <el-table-column prop="dollar_unit_info" label="美元价格单位" width="130" :resizable="false"
+                    v-if="scope.row.type === 2" />
                   <el-table-column prop="specs" label="规格" width="100" :resizable="false" />
                   <el-table-column prop="package" label="包装" width="100" :resizable="false" />
                   <el-table-column prop="remark" label="备注" width="100" :resizable="false" />
