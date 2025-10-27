@@ -63,7 +63,7 @@
                   <el-table-column prop="unit_info" label="人民币价格单位" width="130" :resizable="false" />
                   <el-table-column prop="salesperson" label="业务员" width="100" :resizable="false"
                     v-if="scope.row.type === 2" />
-                  <el-table-column prop="periodperiod" label="交货货期" width="100" :resizable="false"
+                  <el-table-column prop="period" label="货期" width="100" :resizable="false"
                     v-if="scope.row.type === 2" />
                   <el-table-column prop="dollar_price" label="美元价格" width="100" :resizable="false"
                     v-if="scope.row.type === 2" />
