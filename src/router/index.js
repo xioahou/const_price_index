@@ -52,6 +52,8 @@ const router = createRouter({
 const routerWhite = ['/home/price', '/home/product']
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore();
+  console.log(authStore.isAuthenticated);
+
   console.log(111);
   //校验后台传来的token
   const token = to.query.token;
@@ -100,7 +102,7 @@ router.beforeEach(async (to, from, next) => {
 
       next(); //判断是需要登录权限的页面？放行：else
     } else {
-      router.push('/login') // 未登录，重定向到登录页
+      next('/login'); // 未登录，重定向到登录页
     }
   } else {
     next(); // 不需要认证的路由，直接访问
@@ -108,3 +110,5 @@ router.beforeEach(async (to, from, next) => {
   return
 });
 export default router
+
+

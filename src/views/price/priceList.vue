@@ -655,6 +655,8 @@ const getListData = async () => {
       // isFirstSearch.value = true
 
     } else {
+      console.log('请先登录');
+
       ElMessage.error(res.msg)
     }
     searchLoading.value = false
