@@ -1255,14 +1255,15 @@ function headerDrage() {
 
     .viewPic {
       img {
-        width: 100px;
-        height: 100px;
+        width: none !important;
+        height: none !important;
       }
 
       .dowFile {
         text-decoration: underline;
         color: #007aff;
       }
+
     }
   }
 

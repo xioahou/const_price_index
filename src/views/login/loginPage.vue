@@ -10,7 +10,7 @@
           <el-input placeholder="请输入密码" show-password type="password" v-model="formData.password"
             @keyup.enter="getLogin(ruleFormRef)" />
         </el-form-item>
-        <div style="display: flex; justify-content: flex-end;">
+        <div style="display: flex; justify-content: flex-start;margin-bottom: 5px;">
           <el-checkbox v-model="remPass" label="记住密码" />
         </div>
 
