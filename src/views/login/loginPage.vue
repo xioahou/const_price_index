@@ -10,7 +10,15 @@
           <el-input placeholder="请输入密码" show-password type="password" v-model="formData.password"
             @keyup.enter="getLogin(ruleFormRef)" />
         </el-form-item>
+        <div style="display: flex; justify-content: flex-start;margin-bottom: 5px;">
+          <el-checkbox v-model="remPass" label="记住密码" />
+        </div>
+
+
       </el-form>
+
+
+
       <el-button type="primary" class="sub_btn" @click="getLogin(ruleFormRef)">登录</el-button>
 
     </div>
@@ -22,15 +30,41 @@
 import { ElMessage } from 'element-plus'
 import { loginApi } from '@/api/lgoin'
 import { useAuthStore } from '../../stores/user'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { setUserName } from '../../utils/setToken'
+const LS_LEY = 'myapp_remember'
 const router = useRouter()
-
+const remPass = ref(false)
 const formData = ref({
   username: '',
   password: ''
 })
+
+//存储账号密码
+function savePass() {
+  const payload = {
+    username: formData.value.username,
+    password: window.btoa(formData.value.password)
+  }
+  localStorage.setItem(LS_LEY, JSON.stringify(payload))
+}
+// 页面一加载就读数据
+function loadFromLocal() {
+  const data = localStorage.getItem(LS_LEY)
+  if (data) {
+    try {
+      const obj = JSON.parse(data)
+      formData.value.username = obj.username
+      formData.value.password = window.atob(obj.password)
+      remPass.value = true
+    } catch (error) {
+      console.log('读取账号密码错误', error);
+    }
+  } else {
+    return
+  }
+}
 const ruleFormRef = ref()
 const authStore = useAuthStore();
 const rules = ref({
@@ -53,6 +87,12 @@ const getLogin = async (formEl) => {
         setUserName(res.data.name);
         authStore.setInfo(res.data)
         router.push('/home');
+        //是否记住密码
+        if (remPass.value) {
+          savePass()
+        } else {
+          localStorage.removeItem(LS_LEY)
+        }
       } else if (res.code === 400) {
         ElMessage.error(res.msg)
       }
@@ -64,6 +104,9 @@ const getLogin = async (formEl) => {
     }
   })
 }
+onMounted(() => {
+  loadFromLocal()
+})
 </script>
 
 <style lang="less" scoped>

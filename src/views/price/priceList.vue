@@ -21,17 +21,17 @@
     </div>
 
     <el-table style="width: 100%;" :data="tableData" v-loading="loading" element-loading-text="加载中..."
-      @header-dragend="headerDrage" height="75%">
-      <el-table-column label="产品信息" width="170" class-name="top-align-col" align="center">
+      @header-dragend="headerDrage" height="75%" :show-header="tableData.length" border>
+      <el-table-column label="产品信息" width="170" class-name="top-align-col" align="center" fixed>
         <template #default="scope">
           <p class="tag">名称:{{ scope.row.title }}</p>
           <p class="tag">CAS号:{{ scope.row.cas }}</p>
         </template>
       </el-table-column>
-      <el-table-column prop="inquiry_list">
-        <template #default="scope">
-          <el-table :data="scope.row.inquiry_list">
-            <el-table-column prop="company_title" label="公司名称" width="200" fixed="left">
+      <el-table-column prop="inquiry_list" width="3200" label="产品详情">
+        <template #default="scope_inquiry">
+          <el-table :data="scope_inquiry.row.inquiry_list">
+            <el-table-column prop="company_title" label="公司名称" width="200">
               <template #default="scopes">
                 <p>{{ scopes.row.company_title }}</p>
               </template>
@@ -41,7 +41,7 @@
                 <p>{{ scope.row.type === 1 ? '每日询价' : "国际采购" }}</p>
               </template>
             </el-table-column>
-            <el-table-column prop="price_list" label="询价信息" width="1345">
+            <el-table-column prop="price_list" label="询价信息" width="1355">
               <template #default="scope">
                 <el-table :data="scope.row.price_list" :border="true" :row-class-name="priceRowClassName"
                   :key="scope.row.id">
@@ -56,15 +56,19 @@
                       </el-button>
                     </template>
   </el-table-column> -->
-                  <el-table-column prop="time" label="维护时间" width="100" :resizable="false" />
+                  <el-table-column prop="time" label="维护时间" width="105" :resizable="false" />
                   <el-table-column prop="num" label="数量" width="80" :resizable="false" />
                   <el-table-column prop="unit" label="单位" width="80" :resizable="false" />
-                  <el-table-column prop="price" label="价格" width="100" :resizable="false" />
-                  <el-table-column prop="unit_info" label="价格单位" width="130" :resizable="false" />
-                  <el-table-column prop="salesperson" label="业务员" width="100" :resizable="false" />
-                  <el-table-column prop="periodperiod" label="货期" width="100" :resizable="false" />
-                  <el-table-column prop="dollar_price" label="美元价格" width="100" :resizable="false" />
-                  <el-table-column prop="dollar_unit_info" label="美元价格单位" width="130" :resizable="false" />
+                  <el-table-column prop="price" label="人民币价格" width="100" :resizable="false" />
+                  <el-table-column prop="unit_info" label="人民币价格单位" width="130" :resizable="false" />
+                  <el-table-column prop="salesperson" label="业务员" width="100" :resizable="false"
+                    v-if="scope.row.type === 2" />
+                  <el-table-column prop="period" label="货期" width="100" :resizable="false"
+                    v-if="scope.row.type === 2" />
+                  <el-table-column prop="dollar_price" label="美元价格" width="100" :resizable="false"
+                    v-if="scope.row.type === 2" />
+                  <el-table-column prop="dollar_unit_info" label="美元价格单位" width="130" :resizable="false"
+                    v-if="scope.row.type === 2" />
                   <el-table-column prop="specs" label="规格" width="100" :resizable="false" />
                   <el-table-column prop="package" label="包装" width="100" :resizable="false" />
                   <el-table-column prop="remark" label="备注" width="100" :resizable="false" />
@@ -81,12 +85,12 @@
                 </el-table>
               </template>
             </el-table-column>
-            <el-table-column prop="remark" label="备注" />
-            <el-table-column prop="country" label="所在国家" />
-            <el-table-column prop="website" label="公司网站" />
-            <el-table-column prop="address" label="公司地址" />
-            <el-table-column prop="company_else" label="公司其他信息" width="150" />
-            <el-table-column prop="synonym" label="产品名称同义词" width="150" />
+            <el-table-column prop="remark" label="备注" show-overflow-tooltip width="150" />
+            <el-table-column prop="country" label="所在国家" show-overflow-tooltip width="150" />
+            <el-table-column prop="website" label="公司网站" show-overflow-tooltip width="150" />
+            <el-table-column prop="address" label="公司地址" show-overflow-tooltip width="150" />
+            <el-table-column prop="company_else" label="公司其他信息" width="150" show-overflow-tooltip />
+            <el-table-column prop="synonym" label="产品名称同义词" width="150" show-overflow-tooltip />
             <el-table-column prop="attachment" label="附件" width="100">
               <template #default="scope">
 
@@ -651,6 +655,8 @@ const getListData = async () => {
       // isFirstSearch.value = true
 
     } else {
+      console.log('请先登录');
+
       ElMessage.error(res.msg)
     }
     searchLoading.value = false
@@ -781,13 +787,13 @@ async function getCompareTotal() {
 
 const compareList = ref([]) //已在比价列表中数组
 //点击pk
-async function openPriceDrawer() {
-  ElMessage.warning('功能维护中')
-  return
-  // drawer.value = true
-  // await getCompareList()
+// async function openPriceDrawer() {
+//   ElMessage.warning('功能维护中')
+//   return
+//   // drawer.value = true
+//   // await getCompareList()
 
-}
+// }
 //获取比价列表
 async function getCompareList() {
   const res = await getCompareListApi()
@@ -1027,29 +1033,29 @@ function filterPk(his, compare) {
     return compareIdList.value.includes(his)
   }
 }
-async function cancelPk(row) {
-  const delIdList = []
-  delIdList.push(row.id)
-  compareIdList.value = compareIdList.value.filter(id => id !== row.id)
-  const res = await delCompareListApi(delIdList)
-  if (res.code === 200) {
-    //重新获取比价列表中数据
+// async function cancelPk(row) {
+//   const delIdList = []
+//   delIdList.push(row.id)
+//   compareIdList.value = compareIdList.value.filter(id => id !== row.id)
+//   const res = await delCompareListApi(delIdList)
+//   if (res.code === 200) {
+//     //重新获取比价列表中数据
 
-    await getCompareList()//重新刷新已在比价列表数据
+//     await getCompareList()//重新刷新已在比价列表数据
 
-    await getCompareTotal()//获取已在比价列表中数量
+//     await getCompareTotal()//获取已在比价列表中数量
 
-    // setAddId() //重新获取已在比价列表中的id
-    console.log('id', compareIdList.value);
-    await getListData()//刷新列表,让加入比价的id存储到compareIdList
+//     // setAddId() //重新获取已在比价列表中的id
+//     console.log('id', compareIdList.value);
+//     await getListData()//刷新列表,让加入比价的id存储到compareIdList
 
 
 
-  } else {
-    console.log('取消失败');
+//   } else {
+//     console.log('取消失败');
 
-  }
-}
+//   }
+// }
 //表格高亮
 function priceRowClassName({ row }) {
   // 与按钮渲染的判断保持一致：filterPk([], row.id) 为 true 时高亮
@@ -1180,10 +1186,11 @@ function headerDrage() {
       vertical-align: top;
       /* 顶部对齐 */
       line-height: normal;
-      /* 防止撑开 */
-      padding-top: 4px;
+
 
     }
+
+    .customCol {}
   }
 
   .el-pagination {
@@ -1248,14 +1255,15 @@ function headerDrage() {
 
     .viewPic {
       img {
-        width: 100px;
-        height: 100px;
+        width: none !important;
+        height: none !important;
       }
 
       .dowFile {
         text-decoration: underline;
         color: #007aff;
       }
+
     }
   }
 

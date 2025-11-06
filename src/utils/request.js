@@ -1,7 +1,10 @@
 import axios from "axios";
 import { getToken, removeToken, removeUserName } from '@/utils/setToken'
-import router from '@/router/index'
 
+import router from '@/router/index'
+import { useAuthStore } from '../stores/user'
+
+// import { router } from 'vue-route'
 const instance = axios.create({
   baseURL: import.meta.env.VITE_APP_API_URL,
   timeout: 3000,
@@ -26,8 +29,12 @@ instance.interceptors.response.use(function (response) {
 
 
   if (response.data.code === 401) {
+    const authStore = useAuthStore()
+    authStore.removeToken()
     removeToken()
     removeUserName()
+    console.log(response.data.code);
+
     router.push('/login')
 
   }
@@ -42,3 +49,5 @@ instance.interceptors.response.use(function (response) {
 
 
 export default instance;
+
+
