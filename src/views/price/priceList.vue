@@ -59,8 +59,10 @@
                   <el-table-column prop="time" label="维护时间" width="105" :resizable="false" />
                   <el-table-column prop="num" label="数量" width="80" :resizable="false" />
                   <el-table-column prop="unit" label="单位" width="80" :resizable="false" />
-                  <el-table-column prop="price" label="人民币价格" width="100" :resizable="false" />
-                  <el-table-column prop="unit_info" label="人民币价格单位" width="130" :resizable="false" />
+                  <el-table-column prop="price" :label="scope.row.type === 1 ? '价格' : '人民币价格'" width="100"
+                    :resizable="false" />
+                  <el-table-column prop="unit_info" :label="scope.row.type === 1 ? '价格单位' : '人民币价格单位'" width="130"
+                    :resizable="false" />
                   <el-table-column prop="salesperson" label="业务员" width="100" :resizable="false"
                     v-if="scope.row.type === 2" />
                   <el-table-column prop="period" label="货期" width="100" :resizable="false"
