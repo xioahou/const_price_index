@@ -63,16 +63,17 @@
                     :resizable="false" />
                   <el-table-column prop="unit_info" :label="scope.row.type === 1 ? '价格单位' : '人民币价格单位'" width="130"
                     :resizable="false" />
-                  <el-table-column prop="salesperson" label="业务员" width="100" :resizable="false"
-                    v-if="scope.row.type === 2" />
-                  <el-table-column prop="period" label="货期" width="100" :resizable="false"
-                    v-if="scope.row.type === 2" />
+
                   <el-table-column prop="dollar_price" label="美元价格" width="100" :resizable="false"
                     v-if="scope.row.type === 2" />
                   <el-table-column prop="dollar_unit_info" label="美元价格单位" width="130" :resizable="false"
                     v-if="scope.row.type === 2" />
                   <el-table-column prop="specs" label="规格" width="100" :resizable="false" />
                   <el-table-column prop="package" label="包装" width="100" :resizable="false" />
+                  <el-table-column prop="salesperson" label="业务员" width="100" :resizable="false"
+                    v-if="scope.row.type === 2" />
+                  <el-table-column prop="period" label="货期" width="100" :resizable="false"
+                    v-if="scope.row.type === 2" />
                   <el-table-column prop="remark" label="备注" width="100" :resizable="false" />
                   <el-table-column prop="admin_name" label="维护人" width="100" :resizable="false" />
                 </el-table>
