@@ -317,32 +317,35 @@
         <el-form-item label="备注">
           <el-input v-model="addPriceForm.remark" type="textarea" autosize resize="none" disabled />
         </el-form-item>
-      </el-form>
-      <template v-if="uploadFileList.length > 0">
-        <div class="viewPic">
-          <!-- <img :src="item" alt="" v-for="(item, index) in uploadFileList" :key="index">
+        <el-form-item label="附件">
+          <template v-if="uploadFileList.length > 0">
+            <div class="viewPic">
+              <!-- <img :src="item" alt="" v-for="(item, index) in uploadFileList" :key="index">
               <p>移除</p> -->
-          <div class="fileImg" v-for="(item, index) in uploadFileList" :key="index">
-            <template v-if="isDocxFile(item)">
-              <!-- <a :href="item" download class="dowFile">点击链接下载文件</a> -->
-              <el-button @click="dowLoadFile(item)" type="primary" text style="text-decoration: underline;">
-                点击此处下载文件
-              </el-button>
-              <!-- <el-button text type="primary" @click="delImag(index)"
+              <div class="fileImg" v-for="(item, index) in uploadFileList" :key="index">
+                <template v-if="isDocxFile(item)">
+                  <!-- <a :href="item" download class="dowFile">点击链接下载文件</a> -->
+                  <el-button @click="dowLoadFile(item)" type="primary" text style="text-decoration: underline;">
+                    点击此处下载文件
+                  </el-button>
+                  <!-- <el-button text type="primary" @click="delImag(index)"
                 :disabled="index >= fileLength.length ? false : true">
                 删除
               </el-button> -->
-            </template>
-            <template v-else>
-              <el-image style="width: 100px; height: 100px" :src="item" :preview-src-list="[item]" />
-              <!-- <el-button text type="primary" @click="delImag(index)"
+                </template>
+                <template v-else>
+                  <el-image style="width: 100px; height: 100px" :src="item" :preview-src-list="[item]" />
+                  <!-- <el-button text type="primary" @click="delImag(index)"
                 :disabled="index >= fileLength.length ? false : true">
                 删除
               </el-button> -->
-            </template>
-          </div>
-        </div>
-      </template>
+                </template>
+              </div>
+            </div>
+          </template>
+        </el-form-item>
+      </el-form>
+
       <!-- <el-form-item label="附件">
         <el-upload class="upload-demo" :action="`${baseUrl}/upload`" :headers="headers" :on-success="upLoadSuccess"
           :show-file-list="false">
