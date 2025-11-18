@@ -482,7 +482,12 @@
 
     </el-dialog>
     <!-- 比价 -->
-    <el-drawer v-model="drawer" title="询价比对" :size="1600">
+    <el-drawer v-model="drawer" :size="1600">
+      <template #title>
+        <div style="text-align: center; font-size: 20px; font-weight: bold;color:#333333;">
+          添加询价比对
+        </div>
+      </template>
       <el-card v-for="(item, index) in pkTableList" :key="index">
         <template #header>
           <div class="card-header">
