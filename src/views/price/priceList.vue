@@ -942,8 +942,9 @@ const removePkAll = (item) => {
     showCancelButton: true,
     confirmButtonText: "立即移除",
     cancelButtonText: "我再想想",
-    type: "warning",
-    closeOnClickModal: false
+
+    closeOnClickModal: false,
+
   })
     .then(async () => {
       const checkbox = document.getElementById("no-more-remove");
@@ -1020,8 +1021,9 @@ const removePk = async (row) => {
     showCancelButton: true,
     confirmButtonText: "立即移除",
     cancelButtonText: "我再想想",
-    type: "warning",
-    closeOnClickModal: false
+
+    closeOnClickModal: false,
+
   })
     .then(async () => {
       const checkbox = document.getElementById("no-more-remove");
@@ -1341,8 +1343,9 @@ const tempCancelPk = (product) => {
     showCancelButton: true,
     confirmButtonText: "立即移除",
     cancelButtonText: "我再想想",
-    type: "warning",
-    closeOnClickModal: false
+
+    closeOnClickModal: false,
+
   })
     .then(() => {
       const checkbox = document.getElementById("no-more-remove");
@@ -1457,8 +1460,11 @@ function removeInquiry(inquiry) {
     showCancelButton: true,
     confirmButtonText: "立即移除",
     cancelButtonText: "我再想想",
-    type: "warning",
-    closeOnClickModal: false
+
+    closeOnClickModal: false,
+
+
+
   })
     .then(() => {
       const checkbox = document.getElementById("no-more-remove");
@@ -1840,5 +1846,8 @@ function removeInquiry(inquiry) {
       }
     }
   }
+
+
+
 }
 </style>
