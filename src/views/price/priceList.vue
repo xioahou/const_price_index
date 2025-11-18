@@ -44,7 +44,7 @@
             <el-table-column prop="price_list" label="询价信息" width="1455">
               <template #default="scope">
                 <el-table :data="scope.row.price_list" :border="true" :row-class-name="priceRowClassName">
-                  <el-table-column label="pk" width="105" :resizable="false">
+                  <el-table-column label="pk" width="105" :resizable="false" align="center">
                     <template #default="scope">
                       <el-button type="primary" text @click="addPs(scope.row)" v-if="!pkList.includes(scope.row.id)">
                         加入PK
@@ -54,35 +54,35 @@
                       </el-button>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="time" label="维护时间" width="105" :resizable="false" />
-                  <el-table-column prop="num" label="数量" width="80" :resizable="false" />
-                  <el-table-column prop="unit" label="单位" width="80" :resizable="false" />
+                  <el-table-column prop="time" label="维护时间" width="105" :resizable="false" align="center" />
+                  <el-table-column prop="num" label="数量" width="80" :resizable="false" align="center" />
+                  <el-table-column prop="unit" label="单位" width="80" :resizable="false" align="center" />
                   <el-table-column prop="price" :label="scope.row.type === 1 ? '价格' : '人民币价格'" width="100"
-                    :resizable="false" />
+                    :resizable="false" align="center" />
                   <el-table-column prop="unit_info" :label="scope.row.type === 1 ? '价格单位' : '人民币价格单位'" width="130"
-                    :resizable="false" />
+                    :resizable="false" align="center" />
 
                   <el-table-column prop="dollar_price" label="美元价格" width="100" :resizable="false"
-                    v-if="scope.row.type === 2" />
+                    v-if="scope.row.type === 2" align="center" />
                   <el-table-column prop="dollar_unit_info" label="美元价格单位" width="130" :resizable="false"
-                    v-if="scope.row.type === 2" />
-                  <el-table-column prop="specs" label="规格" width="100" :resizable="false" />
-                  <el-table-column prop="package" label="包装" width="100" :resizable="false" />
+                    v-if="scope.row.type === 2" align="center" />
+                  <el-table-column prop="specs" label="规格" width="100" :resizable="false" align="center" />
+                  <el-table-column prop="package" label="包装" width="100" :resizable="false" align="center" />
                   <el-table-column prop="salesperson" label="业务员" width="100" :resizable="false"
-                    v-if="scope.row.type === 2" />
-                  <el-table-column prop="period" label="货期" width="100" :resizable="false"
-                    v-if="scope.row.type === 2" />
-                  <el-table-column prop="remark" label="备注" width="100" :resizable="false" />
-                  <el-table-column prop="admin_name" label="维护人" width="100" :resizable="false" />
+                    v-if="scope.row.type === 2" align="center" />
+                  <el-table-column prop="period" label="货期" width="100" :resizable="false" v-if="scope.row.type === 2"
+                    align="center" />
+                  <el-table-column prop="remark" label="备注" width="100" :resizable="false" align="center" />
+                  <el-table-column prop="admin_name" label="维护人" width="100" :resizable="false" align="center" />
                 </el-table>
               </template>
             </el-table-column>
             <el-table-column prop="contact_list" label="联系方式" width="375">
               <template #default="scope">
                 <el-table :data="scope.row.contact_list" :border="true">
-                  <el-table-column prop="name" label="联系人" width="100" />
-                  <el-table-column prop="phone" label="联系电话" width="150" />
-                  <el-table-column prop="email" label="邮箱" width="100" />
+                  <el-table-column prop="name" label="联系人" width="100" align="center" />
+                  <el-table-column prop="phone" label="联系电话" width="150" align="center" />
+                  <el-table-column prop="email" label="邮箱" width="100" align="center" />
                 </el-table>
               </template>
             </el-table-column>
