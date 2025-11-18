@@ -12,23 +12,23 @@
           </template>
         </el-input>
       </div>
-      <!-- <div class="price_car" @click="openPriceDrawer">
+      <div class="price_car" @click="goPk">
         <span>pk</span>
         <div class="corner_marker">
           {{ compareTotal }}
         </div>
-      </div> -->
+      </div>
     </div>
 
-    <el-table style="width: 100%;" :data="tableData" v-loading="loading" element-loading-text="加载中..."
-      @header-dragend="headerDrage" height="75%" :show-header="tableData.length" border>
+    <el-table style="width: 100%;" :data="tableData" v-loading="loading" element-loading-text="加载中..." height="75%"
+      :show-header="tableData.length > 0" border>
       <el-table-column label="产品信息" width="170" class-name="top-align-col" align="center" fixed>
         <template #default="scope">
           <p class="tag">名称:{{ scope.row.title }}</p>
           <p class="tag">CAS号:{{ scope.row.cas }}</p>
         </template>
       </el-table-column>
-      <el-table-column prop="inquiry_list" width="3200" label="产品详情">
+      <el-table-column prop="inquiry_list" width="3400" label="产品详情">
         <template #default="scope_inquiry">
           <el-table :data="scope_inquiry.row.inquiry_list">
             <el-table-column prop="company_title" label="公司名称" width="200">
@@ -41,21 +41,19 @@
                 <p>{{ scope.row.type === 1 ? '每日询价' : "国际采购" }}</p>
               </template>
             </el-table-column>
-            <el-table-column prop="price_list" label="询价信息" width="1355">
+            <el-table-column prop="price_list" label="询价信息" width="1455">
               <template #default="scope">
-                <el-table :data="scope.row.price_list" :border="true" :row-class-name="priceRowClassName"
-                  :key="scope.row.id">
-                  <!-- <el-table-column label="pk" width="100">
+                <el-table :data="scope.row.price_list" :border="true" :row-class-name="priceRowClassName">
+                  <el-table-column label="pk" width="105" :resizable="false">
                     <template #default="scope">
-                      <el-button type="primary" text @click="addPs(scope.row)" v-if="!filterPk([], scope.row.id)"
-                        disabled>
-                        加入比价
+                      <el-button type="primary" text @click="addPs(scope.row)" v-if="!pkList.includes(scope.row.id)">
+                        加入pk
                       </el-button>
-                      <el-button v-else type="danger" text @click="cancelPk(scope.row)" disabled>
+                      <el-button v-else type="danger" text @click="cancelPk(scope.row)">
                         取消pk
                       </el-button>
                     </template>
-  </el-table-column> -->
+                  </el-table-column>
                   <el-table-column prop="time" label="维护时间" width="105" :resizable="false" />
                   <el-table-column prop="num" label="数量" width="80" :resizable="false" />
                   <el-table-column prop="unit" label="单位" width="80" :resizable="false" />
@@ -369,76 +367,7 @@
         </div>
       </template>
     </el-dialog>
-    <!-- 比价列表弹窗 -->
-    <el-drawer v-model="drawer" title="询价比对" direction="rtl" size="60%" class="priceDrawer" @close="closeDrawer">
-      <el-card v-for="(item, index) in compareList" :key="index">
-        <template #header>
-          <p><span>{{ item.title }}</span> <span>{{ item.cas }}</span> <span>{{ item.company_title }}</span>
-            <span>{{ item.type === 1 ? '每日询价' : '国际采购' }}</span>
-          </p>
-          <el-icon @click="delCompare(item)">
-            <CircleClose />
-          </el-icon>
-        </template>
-        <div class="my-2">
-          <el-checkbox v-model="item.checked" @change="addPk(item)" />
-        </div>
-        <el-table :data="item.price_list" style="width: 100%" border>
-          <!-- <el-table-column type="selection" width="55" /> -->
-          <el-table-column prop="time" label="维护日期" width="100" />
-          <el-table-column prop="num" label="数量" width="80" />
-          <el-table-column prop="unit" label="单位" />
-          <el-table-column prop="price" label="价格" />
-          <el-table-column prop="unit_info" label="价格单位" />
-          <el-table-column prop="specs" label="规格" />
-          <el-table-column prop="package" label="包装" />
-          <el-table-column prop="remark" label="备注" />
-          <el-table-column prop="admin_name" label="维护人" />
-          <el-table-column label="操作">
-            <template #default="scope">
-              <el-button text @click="delCompare(scope.row.id)" type="primary">移除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-card>
-      <el-button type="primary" style="width: 100%;" @click="pkDoor" :disabled="pkIds.length === 0">去比对>></el-button>
-      <!-- 最近浏览 -->
-      <el-button type="success" plain style="margin:20px 0 10px 0;" @click="hisBrow">最近浏览</el-button>
-      <template v-if="hisBrowList.length > 0">
-        <el-card v-for="(item, index) in hisBrowList" :key="index">
-          <template #header>
-            <p><span>{{ item.title }}</span> <span>{{ item.cas }}</span> <span>{{ item.company_title }}</span>
-              <span>每日询价</span>
-            </p>
-          </template>
 
-          <el-table :data="item.price_list" style="width: 100%" border :row-class-name="hisRowClassName">
-            <!-- <el-table-column type="selection" width="55" /> -->
-            <el-table-column prop="time" label="维护日期" width="100" />
-            <el-table-column prop="num" label="数量" width="80" />
-            <el-table-column prop="unit" label="单位" />
-            <el-table-column prop="price" label="价格" />
-            <el-table-column prop="unit_info" label="价格单位" />
-            <el-table-column prop="specs" label="规格" />
-            <el-table-column prop="package" label="包装" />
-            <el-table-column prop="remark" label="备注" />
-            <el-table-column prop="admin_name" label="维护人" />
-            <el-table-column label="操作">
-              <template #default="scope">
-                <el-button text @click="addPs(scope.row, true)" type="primary"
-                  v-if="!filterPk(scope.row.id, false)">+比价</el-button>
-                <el-button text type="primary" v-else @click="delCompare(scope.row.id)">-取消</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-card>
-        <el-button style="width: 100%;">暂无更多数据</el-button>
-      </template>
-
-
-
-
-    </el-drawer>
     <!-- 全屏对话框 -->
     <el-dialog v-model="dialogVisible" fullscreen class="multiDialog">
 
@@ -485,26 +414,51 @@
         </tbody>
       </table> -->
 
-
+      <div class="top">
+        <div class="logo">
+          <img src="../../common//assets/img/logo蓝字.png" alt="">
+        </div>
+        <div class="border" style="height: 80px; width: 1px; background-color: #cccccc;"></div>
+        <h4>价格比对</h4>
+      </div>
       <table class="merge-table" ref="tableRef">
         <thead>
           <tr>
             <th class="field-col">产品名称</th>
-            <th v-for="(p, pIdx) in pkTableList" :key="'p-' + pIdx" :colspan="productColSpan(p)" class="sort-target"
+            <th v-for="(p, pIdx) in pkListIng" :key="'p-' + pIdx" :colspan="productColSpan(p)" class="sort-target"
               :data-product-index="pIdx">
-              {{ p.title }}
+              <div class="th-content">
+                {{ p.title }}
+              </div>
+              <el-button link type="danger" class="sort-close" @click="tempCancelPk(p)">
+                <el-icon>
+                  <el-icon>
+                    <CircleClose />
+                  </el-icon>
+                </el-icon>
+              </el-button>
             </th>
           </tr>
           <tr>
             <th class="field-col">cas号</th>
-            <th v-for="(p, pIdx) in pkTableList" :key="'cas-' + pIdx" :colspan="productColSpan(p)">
+            <th v-for="(p, pIdx) in pkListIng" :key="'cas-' + pIdx" :colspan="productColSpan(p)">
               {{ p.cas }}
             </th>
           </tr>
           <tr>
             <th class="field-col">企业名称</th>
-            <th v-for="(inq, iIdx) in inquiryColumns" :key="'inq-' + iIdx" :colspan="inq.colspan">
-              {{ inq.company_title }}
+            <th v-for="(inq, iIdx) in inquiryColumns" :key="'inq-' + iIdx" :colspan="inq.colspan" class="comp_name">
+              <!-- {{ inq.company_title }} -->
+              <div class="th-content">
+                {{ inq.company_title }}
+              </div>
+              <el-button link type="danger" class="sort-close" @click="removeInquiry(inq, inquiryColumns)">
+                <el-icon>
+                  <el-icon>
+                    <CircleClose />
+                  </el-icon>
+                </el-icon>
+              </el-button>
             </th>
           </tr>
           <tr>
@@ -527,18 +481,93 @@
       </table>
 
     </el-dialog>
+    <!-- 比价 -->
+    <el-drawer v-model="drawer" title="询价比对" :size="1300">
+      <el-card v-for="(item, index) in pkTableList" :key="index">
+        <template #header>
+          <div class="card-header">
+
+            <el-button link type="danger" class="close-btn" @click="removePkAll(item.price_list)">
+              <el-icon style="color:#333333;">
+                <CircleClose />
+              </el-icon>
+            </el-button>
+          </div>
+        </template>
+        <h1>{{ item.title }}</h1>
+        <div class="desc">
+          <span>{{ item.cas }}</span>
+          <span>{{ item.company_title }}</span>
+          <span>{{ item.price_list[0].type === 1 ? '每日询价' : '国际采购' }}</span>
+        </div>
+        <div class="tab_body" style="display: flex; align-items: center; gap:5px">
+          <el-checkbox :model-value="isItemChecked(item)" @change="toggleSelect(item)" />
+          <el-table :data="item.price_list" style="width: 100%" border>
+            <el-table-column prop="time" label="维护时间" width="180" />
+            <el-table-column prop="num" label="数量" width="180" />
+            <el-table-column prop="unit" label="单位" />
+            <el-table-column prop="price" label="价格" />
+            <el-table-column prop="unit_info" label="价格单位" />
+            <el-table-column prop="specs" label="规格" />
+            <el-table-column prop="package" label="包装" />
+            <el-table-column prop="remark" label="备注" width="200" />
+            <el-table-column prop="admin_name" label="维护人" />
+            <el-table-column label="操作">
+              <template #default="scope">
+                <el-button text type="danger" @click="removePk(scope.row)">移除</el-button>
+              </template>
+
+            </el-table-column>
+          </el-table>
+        </div>
+      </el-card>
+      <el-button style="margin-top: 10px; width: 100%;" type="primary" @click="pkDilog"
+        :disabled="!(selectedIds.length >= 2)">去比对</el-button>
+      <div class="his_see">
+        <el-button plain type="primary" style="margin-top: 10px;">最近浏览</el-button>
+        <el-card v-for="(item, index) in hisCate" :key="index">
+          <h1>{{ item.title }}</h1>
+          <div class="desc">
+            <span>{{ item.cas }}</span>
+            <span>{{ item.company_title }}</span>
+            <span>{{ item.type === 1 ? '每日询价' : '国际采购' }}</span>
+          </div>
+          <div class="tab_body" style="display: flex; align-items: center; gap:5px">
+            <el-table :data="item.price_list" style="width: 100%" border :row-class-name="priceRowClassName">
+              <el-table-column prop="time" label="维护时间" width="180" />
+              <el-table-column prop="num" label="数量" width="180" />
+              <el-table-column prop="unit" label="单位" />
+              <el-table-column prop="price" label="价格" />
+              <el-table-column prop="unit_info" label="价格单位" />
+              <el-table-column prop="specs" label="规格" />
+              <el-table-column prop="package" label="包装" />
+              <el-table-column prop="remark" label="备注" width="200" />
+              <el-table-column prop="admin_name" label="维护人" />
+              <el-table-column label="操作">
+                <template #default="scope">
+                  <el-button text type="primary" @click="addPs(scope.row)"
+                    v-if="!pkList.includes(scope.row.id)">+比对</el-button>
+                  <el-button text type="danger" @click="cancelPk(scope.row)" v-else>取消</el-button>
+                </template>
+
+              </el-table-column>
+            </el-table>
+          </div>
+        </el-card>
+        <el-button style="margin-top: 10px; width: 100%;">没有更多了</el-button>
+      </div>
+    </el-drawer>
   </div>
 </template>
 
 <script setup>
-import { Search } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
-import { CircleClose } from '@element-plus/icons-vue'
-import { ElMessageBox } from 'element-plus'
+import { Search, CircleClose } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+
 import { getListApi, addLikeApi, getNewPriceListApi, getPriceTotalApi, addCompareListApi, getCompareTotalApi, getCompareListApi, delCompareListApi, getCheckedCompareApi, getCategoryApi } from '../../api/homeList.js'
 // import { useAuthStore } from '../../stores/user'
 
-import { ref, computed, watch } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 
 const searchLoading = ref(false)
 
@@ -753,156 +782,186 @@ async function searchBtn() {
 
   formData.value.page = 1
   await getListData()
-  filterPk()
-}
 
-const ids = ref([])
-const compareTotal = ref(0)
+}
+//比价
 const drawer = ref(false)
-//加入比价
-async function addPs(row, flage = false) {
-  ids.value = []
-  console.log(row);
+const pkList = ref([]);
+const ids = ref([])
+const addPs = async (row) => {
   ids.value.push(row.id)
-  const res = await addCompareListApi(ids.value)
-  await getCompareTotal() //伙计总数量
-  await getCompareList() //重新获取比价列表中数据
-  setAddId()
-  await getListData()//刷新列表,让加入比价的id存储到compareIdList
+  try {
+    const res = await addCompareListApi(ids.value)
+    if (res.code === 200) {
+      pkList.value.push(row.id);
+      getCompareTotal()
+      ElMessage.success("加入比价成功");
+      if (drawer.value) {
+        await getCompareList()
+      }
 
-  console.log(res);
-  if (flage) { //如果是从最近浏览点的+比价，重新获取比价列表
-    console.log('从最近浏览点的+比价');
-
-    await getCompareList()
-
+    } else {
+      ElMessage.error(res.msg || "加入失败");
+    }
+  } catch (error) {
+    ElMessage.error("请求失败", error);
   }
-}
-async function getCompareTotal() {
-  const resTotal = await getCompareTotalApi()
-  if (resTotal.code === 200) {
-    compareTotal.value = resTotal.data.total
-  } else {
-    ElMessage.error(resTotal.msg)
+  if (!pkList.value.includes(row.id)) {
+    pkList.value.push(row.id);
   }
-}
+  ids.value = []
+};
+const cacelIds = ref([])
+const cancelPk = async (row) => {
+  cacelIds.value.push(row.id)
+  try {
+    const res = await delCompareListApi(cacelIds.value)
+    if (res.code === 200) {
+      pkList.value = pkList.value.filter(id => id !== row.id);
+      getCompareTotal()
+      if (drawer.value) {
+        await getCompareList()
+
+      }
 
 
-const compareList = ref([]) //已在比价列表中数组
-//点击pk
-// async function openPriceDrawer() {
-//   ElMessage.warning('功能维护中')
-//   return
-//   // drawer.value = true
-//   // await getCompareList()
+    } else {
+      ElMessage.error(res.data.msg || "取消失败");
+    }
+  } catch (error) {
+    ElMessage.error("请求失败", error);
+  }
+  cacelIds.value = []
+};
 
-// }
-//获取比价列表
-async function getCompareList() {
-  const res = await getCompareListApi()
-  console.log('比价列表中数据', res);
+const priceRowClassName = ({ row }) => {
+  return pkList.value.includes(row.id) ? "pk-selected-row" : "";
+};
+const compareTotal = ref(0)
+const getCompareTotal = async () => {
+  const res = await getCompareTotalApi()
   if (res.code === 200) {
-    // console.log(res);
-    compareList.value = res.data.list
+    pkList.value = res.data.list || [];
+    compareTotal.value = res.data.total
+  } else {
+    ElMessage.error(res.msg || "获取比价失败");
+  }
+}
+onMounted(() => {
+  getCompareTotal(); // ← 自动获取已加入比价 ID 并渲染
+});
+const pkTableList = ref([])
+const goPk = async () => {
+
+  console.log(pkListIng);
+
+  await getCompareList()
+  drawer.value = true
+
+
+}
+const getCompareList = async () => {
+  const res = await getCompareListApi()
+  if (res.code === 200) {
+    pkTableList.value = res.data.list
+    await getCategory()
 
   }
 }
-getCompareList()
-//删除比价列表
-const delIds = ref([])
-async function delCompare(ids) {
-  console.log(ids);
+const removePkAll = (item) => {
+  console.log(item);
 
+  const rows = Array.isArray(item) ? item : [item];
 
   ElMessageBox.confirm(
-    '移除该比价吗?',
-    '提示',
+    '移除后，该比价信息将被取消比对',
     {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning',
+      confirmButtonText: '立即移除',
+      cancelButtonText: '我再想想',
+      type: 'warning'
     }
   )
     .then(async () => {
-
-      if (ids && Array.isArray(ids.price_list) && ids.price_list.length > 0) {
-        console.log(111);
-
-        ids.price_list.forEach(item => {
-          console.log(item.id);
-
-          delIds.value.push(item.id)
-        })
-      } else {
-        delIds.value.push(ids)
+      // 遍历逐个调用 cancelPk
+      for (const row of rows) {
+        await cancelPk(row);
+        selectedIds.value = selectedIds.value.filter(id => id !== row.id);
       }
 
+      await getCompareTotal();
+      await goPk();
 
-      const res = await delCompareListApi(delIds.value)
-      console.log('删除后', compareIdList.value);
-      compareIdList.value = compareIdList.value.filter(id => !delIds.value.includes(id)) //删除后更新compareIdList，让其不包含已经删除的id
-
-      if (res.code === 200) {
-        console.log(res);
-        delIds.value = []
-        await getCompareTotal()
-        ElMessage({
-          type: 'success',
-          message: '移除成功',
-        })
-        delIds.value = []
-        await getCompareList() //重新刷新已在比价列表数据
-        await getListData() //刷新列表,让移除比价的id从compareIdList中移除
-      } else {
-        ElMessage.error(res.msg)
-      }
+      // ElMessage.success("移除成功");
     })
     .catch(() => {
-      delIds.value = []
+      ElMessage({
+        type: 'info',
+        message: '已取消操作'
+      });
+    });
+
+}
+const removePk = async (row) => {
+  ElMessageBox.confirm(
+    '移除后，该比价信息将被取消比对',
+    {
+      confirmButtonText: '立即移除',
+      cancelButtonText: '我在想想',
+      type: '移除该比价吗?',
+    }
+  )
+    .then(async () => {
+      await cancelPk(row)
+      await goPk()
+      selectedIds.value = selectedIds.value.filter(i => i !== row.id)
+      await getCompareTotal()
+    })
+    .catch(() => {
       ElMessage({
         type: 'info',
         message: '移除失败',
       })
     })
-}
-const pkIds = ref([])
-function addPk(item) {
-  // 根据 id 查找在数组中的索引
-  const index = pkIds.value.findIndex(el => el.id === item.id);
 
-  if (index === -1) {
-    // id 不存在，添加整个对象
-    pkIds.value.push(item);
+
+
+}
+const selectedIds = ref([]);
+const isItemChecked = (item) => {
+  // 如果该 card 下的所有 price_list.id 都在 selectedIds 中 → 表示选中
+  return item.price_list.every(p => selectedIds.value.includes(p.id));
+};
+const toggleSelect = (item) => {
+  console.log(item);
+
+  const priceIds = item.price_list.map(p => p.id);
+
+  const isChecked = isItemChecked(item);
+
+  if (!isChecked) {
+    // 勾选时：加入所有 price_list 的 id
+    selectedIds.value = [...new Set([...selectedIds.value, ...priceIds])];
   } else {
-    // id 已存在，删除对应对象
-    pkIds.value.splice(index, 1);
+    // 取消勾选时：删除所有 price_list 的 id
+    selectedIds.value = selectedIds.value.filter(id => !priceIds.includes(id));
   }
-}
-//去比对，对数据处理拿到每个priceList
-const pkTableList = ref([])
-const dialogVisible = ref(false)
-async function pkDoor() {
-  const priceListIds = []
-  pkIds.value.forEach(item => {
-    item.price_list.forEach(price => {
-      priceListIds.push(price.id)
-    })
-  })
-  const res = await getCheckedCompareApi(priceListIds.join(','))
+};
+const hisCate = ref([])
+const getCategory = async () => {
+  const res = await getCategoryApi()
   if (res.code === 200) {
-    pkTableList.value = res.data.list
-
+    hisCate.value = res.data.list
   }
-  console.log(priceListIds);
-  dialogVisible.value = true
+
 }
-//pk表格数据处理
 const fields = [
   { label: "维护日期", key: "time" },
   { label: "数量", key: "num" },
   { label: "单位", key: "unit" },
-  { label: "价格", key: "price" },
-  { label: "价格单位", key: "unit_info" },
+  { label: "人民币价格", key: "price" },
+  { label: "人民币价格单位", key: "unit_info" },
+  { label: "美元价格", key: "dollar_price" },
+  { label: "美元价格单位", key: "dollar_unit_info" },
   { label: "规格", key: "specs" },
   { label: "包装", key: "package" },
   { label: "业务员", key: "salesperson" },
@@ -910,10 +969,74 @@ const fields = [
   { label: "备注", key: "remark" },
   { label: "维护人", key: "admin_name" }
 ];
-const tableRef = ref(null);
+const dialogVisible = ref(false)
+const pkDilog = async () => {
+  await getCheckedCompare()
+  console.log(pkListIng.value);
+
+
+
+}
+
+const pkListIng = ref([])
+const getCheckedCompare = async () => {
+  const str = selectedIds.value.join(',')
+  const res = await getCheckedCompareApi(str)
+  if (res.code === 200) {
+    pkListIng.value = res.data.list
+    dialogVisible.value = true
+  }
+}
+
+const productColSpan = (product) => {
+  console.log(product);
+
+  console.log(product.inquiry.reduce((sum, inq) => sum + inq.price_list.length, 0));
+
+  return product.inquiry.reduce((sum, inq) => sum + inq.price_list.length, 0);
+};
+const inquiryColumns = computed(() => {
+  const result = [];
+
+  pkListIng.value.forEach((p) => {
+    p.inquiry.forEach((inq) => {
+      result.push({
+        company_title: inq.company_title,
+        type: inq.type,
+        colspan: inq.price_list.length
+      });
+    });
+  });
+  console.log('result', result);
+
+  return result;
+});
+
+const priceType = computed(() => {
+  const result = [];
+
+  pkListIng.value.forEach((p) => {
+    p.inquiry.forEach((inq) => {
+      inq.price_list.forEach((priceItem) => {
+        result.push({
+
+          company_title: inq.company_title,
+          type: priceItem.type,
+          colspan: inq.price_list.length,
+        });
+      })
+
+    });
+  });
+  console.log('result', result);
+
+  return result;
+}
+)
+
 const columns = computed(() => {
   const cols = [];
-  pkTableList.value.forEach((p, pIdx) => {
+  pkListIng.value.forEach((p, pIdx) => {
     p.inquiry.forEach((inq, iIdx) => {
       inq.price_list.forEach((price, prIdx) => {
         cols.push({
@@ -930,148 +1053,95 @@ const columns = computed(() => {
   console.log('cols', cols);
   return cols;
 });
-const inquiryColumns = computed(() => {
-  const result = [];
-
-  pkTableList.value.forEach((p) => {
-    p.inquiry.forEach((inq) => {
-      result.push({
-        company_title: inq.company_title,
-        type: inq.type,
-        colspan: inq.price_list.length
-      });
-    });
-  });
-  console.log('result', result);
-
-  return result;
-});
-const priceType = computed(() => {
-  const result = [];
-
-  pkTableList.value.forEach((p) => {
-    p.inquiry.forEach((inq) => {
-      inq.price_list.forEach((priceItem) => {
-        result.push({
-
-          company_title: inq.company_title,
-          type: priceItem.type,
-          colspan: inq.price_list.length
-        });
-      })
-
-    });
-  });
-  console.log('result', result);
-
-  return result;
-}
-)
-const productColSpan = (product) => {
+//计算企业数量
+const getTotalCompanyCount = () => pkListIng.value.reduce((sum, p) => sum + p.inquiry.length, 0);
+const tempCancelPk = (product) => {
+  console.log('删除产品名称');
   console.log(product);
 
-  console.log(product.inquiry.reduce((sum, inq) => sum + inq.price_list.length, 0));
+  const totalCompanies = getTotalCompanyCount();
 
-  return product.inquiry.reduce((sum, inq) => sum + inq.price_list.length, 0);
-};
-
-//最近浏览
-const hisBrowList = ref([]) //最近浏览数据列表
-const hisBrowId = ref([]) //最近浏览数据id
-async function hisBrow() {
-  const res = await getCategoryApi()
-  if (res.code === 200) {
-    hisBrowList.value = res.data.list
+  // 如果删掉这个产品，剩余企业数量是多少？
+  const afterDeleteCompanyCount =
+    totalCompanies - product.inquiry.length;
+  if (afterDeleteCompanyCount < 2) {
+    ElMessage.warning("至少需要保留两个企业询价信息!");
+    return;
   }
+
+  // 删除产品
+  pkListIng.value = pkListIng.value.filter((p) => p.cas !== product.cas);
 }
-watch(hisBrowList, (newVal) => {  //每次最近浏览数据变换都重新获取id
-  if (newVal.length) {
-    console.log('最近浏览数据变换了');
-    console.log(hisBrowList.value);
-    hisBrowList.value.forEach(item => {
-      item.price_list.forEach(price => {
-        if (!hisBrowId.value.includes(price.id)) { // 已有就不加
-          hisBrowId.value.push(price.id)
-        }
-      })
-    })
-  }
-})
-//处理最近浏览
-function closeDrawer() {
-  hisBrowList.value = []
-}
-//存储比对列表价格id
-getCompareTotal()
 
-const compareIdList = ref([])
-function setAddId() { //拿到已在比价列表中的id
-  // compareIdList.value = []
-  compareList.value.forEach(item => {
-    item.price_list.forEach(price => {
-      if (!compareIdList.value.includes(price.id)) { // 已有就不加
-        compareIdList.value.push(price.id)
-      }
-    })
-  })
-  console.log(compareIdList.value);
-}
-watch(compareList, (newVal) => {
-  if (newVal.length) {
-    console.log('变换了');
-    console.log(compareList.value);
+// function removeInquiry(inquiry, ins) {
+//   console.log(inquiry);
+//   console.log(ins);
 
-    setAddId()
-  }
-})
-function filterPk(his, compare) {
-  console.log('compare', compare);
-  console.log('his', his);
+//   const totalCompanies = getTotalCompanyCount();
 
-
-  if (compare) {
-    return compareIdList.value.includes(compare)
-  }
-  if (his) {
-    return compareIdList.value.includes(his)
-  }
-}
-// async function cancelPk(row) {
-//   const delIdList = []
-//   delIdList.push(row.id)
-//   compareIdList.value = compareIdList.value.filter(id => id !== row.id)
-//   const res = await delCompareListApi(delIdList)
-//   if (res.code === 200) {
-//     //重新获取比价列表中数据
-
-//     await getCompareList()//重新刷新已在比价列表数据
-
-//     await getCompareTotal()//获取已在比价列表中数量
-
-//     // setAddId() //重新获取已在比价列表中的id
-//     console.log('id', compareIdList.value);
-//     await getListData()//刷新列表,让加入比价的id存储到compareIdList
-
-
-
-//   } else {
-//     console.log('取消失败');
-
+//   if (totalCompanies <= 2) {
+//     ElMessage.warning("至少需要保留两个企业询价信息!");
+//     return;
 //   }
-// }
-//表格高亮
-function priceRowClassName({ row }) {
-  // 与按钮渲染的判断保持一致：filterPk([], row.id) 为 true 时高亮
-  return filterPk([], row.id) ? 'pk-cancel-row' : ''
-}
-function hisRowClassName({ row }) {
-  // 与按钮渲染的判断保持一致：filterPk([], row.id) 为 true 时高亮
-  return filterPk(row.id, '') ? 'pk-cancel-row' : ''
-}
-function headerDrage() {
-  console.log(1111);
-  return
 
+//   // 遍历所有产品并删除企业
+//   pkListIng.value.forEach((p) => {
+//     console.log(p);
+
+//     if (p.inquiry) {
+//       p.inquiry = p.inquiry.filter((i) => i.id !== inquiry.id);
+//     }
+//   });
+
+//   pkListIng.value = pkListIng.value.filter((p) => p.inquiry.length > 0);
+// }
+// function removeInquiry(inquiry) {
+//   // 遍历所有产品的 inquiry 数组，删除匹配的企业
+//   pkListIng.value.forEach(p => {
+//     if (p.inquiry) {
+//       p.inquiry = p.inquiry.filter(i => i.id !== inquiry.id);
+//     }
+//   });
+
+//   // 如果希望删除后该产品没有任何企业时，也删除该产品
+//   pkListIng.value = pkListIng.value.filter(p => p.inquiry.length > 0);
+// }
+// function removeInquiry(inquiry) {
+
+//   // 用 company_title 进行匹配删除
+//   pkListIng.value = pkListIng.value.map(product => {
+//     if (product.inquiry) {
+//       return {
+//         ...product,
+//         inquiry: product.inquiry.filter(i => i.company_title !== inquiry.company_title)
+//       };
+//     }
+//     return product;
+//   }).filter(p => p.inquiry.length > 0);
+// }
+function removeInquiry(inquiry) {
+  console.log("要删除的企业：", inquiry);
+
+  // 计算总企业数量
+  const totalCompanies = pkListIng.value.reduce((sum, p) => sum + (p.inquiry?.length || 0), 0);
+
+  if (totalCompanies <= 2) {
+    ElMessage.warning("至少需要保留两个企业询价信息!");
+    return;
+  }
+
+  // 遍历所有产品并删除匹配的企业（用 company_title 作为唯一标识）
+  pkListIng.value = pkListIng.value.map(product => {
+    if (product.inquiry) {
+      return {
+        ...product,
+        inquiry: product.inquiry.filter(i => i.company_title !== inquiry.company_title)
+      };
+    }
+    return product;
+  })
+    // 删除没有企业的产品
+    .filter(p => p.inquiry.length > 0);
 }
 </script>
 
@@ -1179,8 +1249,13 @@ function headerDrage() {
 
   :deep(.el-table) {
     .pk-cancel-row {
-      background-color: #e0b14b !important;
+      background-color: #FEF2F2 !important;
       /* 你可以换成任意颜色 */
+    }
+
+    .pk-selected-row {
+      background-color: #FEF2F2 !important;
+      /* 柔和高亮，可自改 */
     }
 
     .top-align-col {
@@ -1193,7 +1268,13 @@ function headerDrage() {
 
     }
 
-    .customCol {}
+    .cell {
+      white-space: normal;
+      /* 允许换行 */
+      overflow: visible;
+      /* 超出容器的文字显示出来 */
+    }
+
   }
 
   .el-pagination {
@@ -1202,13 +1283,6 @@ function headerDrage() {
     justify-content: end;
   }
 
-  :deep(.el-drawer) {
-    .el-form {
-      .el-form-item {
-        margin-bottom: 5px !important;
-      }
-    }
-  }
 
   :deep(.editDilog) {
     height: 700px;
@@ -1309,6 +1383,28 @@ function headerDrage() {
   }
 
   :deep(.multiDialog) {
+    .top {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      height: 100px;
+
+      .logo {
+        width: 200px;
+        height: 100px;
+
+        img {
+          width: 100%;
+        }
+      }
+
+      h4 {
+        margin-top: -10px;
+        margin-left: 10px;
+        font-size: 30px;
+      }
+    }
+
     .el-dialog__body {
       margin-top: 20px;
     }
@@ -1335,6 +1431,49 @@ function headerDrage() {
     .price {
       color: red;
       font-weight: bold;
+    }
+
+    .sort-target,
+    .comp_name {
+      position: relative;
+
+      .sort-close {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+
+        .el-icon {
+          color: #333333;
+        }
+      }
+    }
+  }
+
+  :deep(.el-drawer) {
+    .el-card {
+      .el-card__header {
+        padding: 0px;
+        height: 30px;
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        height: 30px;
+      }
+
+      h1 {
+        font-size: 16px;
+        margin-left: 20px;
+      }
+
+      .desc {
+        margin-top: 5px;
+        display: flex;
+        justify-content: space-between;
+        margin-left: 20px;
+      }
     }
   }
 }
