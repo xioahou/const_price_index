@@ -485,7 +485,7 @@
 
     </el-dialog>
     <!-- 比价 -->
-    <el-drawer v-model="drawer" :size="1600">
+    <el-drawer v-model="drawer" :size="1900">
       <template #title>
         <div style="text-align: center; font-size: 20px; font-weight: bold;color:#333333;">
           添加询价比对
@@ -511,21 +511,22 @@
         <div class="tab_body" style="display: flex; align-items: center; gap:5px">
           <el-checkbox :model-value="isItemChecked(item)" @change="toggleSelect(item)" />
           <el-table :data="item.price_list" style="width: 100%" border>
-            <el-table-column prop="time" label="维护时间" width="180" />
-            <el-table-column prop="num" label="数量" width="100" />
-            <el-table-column prop="unit" label="单位" />
+            <el-table-column prop="time" label="维护日期" width="100" align="center" />
+            <el-table-column prop="num" label="数量" width="100" align="center" />
+            <el-table-column prop="unit" label="单位" align="center" />
 
-            <el-table-column prop="price" label="价格" />
-            <el-table-column prop="unit_info" label="价格单位" />
-            <el-table-column prop="dollar_price" label="美元价格" v-if="item.type === 2" />
-            <el-table-column prop="dollar_unit_info" label="美元价格单位" v-if="item.type === 2" width="110" />
-            <el-table-column prop="specs" label="规格" />
-            <el-table-column prop="package" label="包装" />
-            <el-table-column prop="salesperson" label="业务员" v-if="item.type === 2" />
-            <el-table-column prop="period" label="货期" v-if="item.type === 2" />
-            <el-table-column prop="remark" label="备注" width="200" />
-            <el-table-column prop="admin_name" label="维护人" />
-            <el-table-column label="操作">
+            <el-table-column prop="price" :label="item.type === 1 ? '价格' : '人民币价格'" align="center" />
+            <el-table-column prop="unit_info" :label="item.type === 1 ? '价格单位' : '人民币价格单位'" width="130"
+              align="center" />
+            <el-table-column prop="dollar_price" label="美元价格" v-if="item.type === 2" align="center" />
+            <el-table-column prop="dollar_unit_info" label="美元价格单位" v-if="item.type === 2" width="110" align="center" />
+            <el-table-column prop="specs" label="规格" align="center" />
+            <el-table-column prop="package" label="包装" align="center" />
+            <el-table-column prop="salesperson" label="业务员" v-if="item.type === 2" align="center" />
+            <el-table-column prop="period" label="货期" v-if="item.type === 2" align="center" />
+            <el-table-column prop="remark" label="备注" width="200" align="center" />
+            <el-table-column prop="admin_name" label="维护人" align="center" />
+            <el-table-column label="操作" align="center">
               <template #default="scope">
                 <el-button text type="danger" @click="removePk(scope.row)">移除</el-button>
               </template>
@@ -547,20 +548,22 @@
           </div>
           <div class="tab_body" style="display: flex; align-items: center; gap:5px">
             <el-table :data="item.price_list" style="width: 100%" border :row-class-name="priceRowClassName">
-              <el-table-column prop="time" label="维护时间" width="180" />
-              <el-table-column prop="num" label="数量" width="180" />
-              <el-table-column prop="unit" label="单位" />
-              <el-table-column prop="price" label="价格" />
-              <el-table-column prop="unit_info" label="价格单位" />
-              <el-table-column prop="dollar_price" label="美元价格" v-if="item.type === 2" />
-              <el-table-column prop="dollar_unit_info" label="美元价格单位" v-if="item.type === 2" />
-              <el-table-column prop="specs" label="规格" />
-              <el-table-column prop="package" label="包装" />
-              <el-table-column prop="salesperson" label="业务员" v-if="item.type === 2" />
-              <el-table-column prop="period" label="交货周期" v-if="item.type === 2" />
-              <el-table-column prop="remark" label="备注" width="200" />
-              <el-table-column prop="admin_name" label="维护人" />
-              <el-table-column label="操作">
+              <el-table-column prop="time" label="维护日期" width="180" align="center" />
+              <el-table-column prop="num" label="数量" width="100" align="center" />
+              <el-table-column prop="unit" label="单位" align="center" />
+              <el-table-column prop="price" :label="item.type === 1 ? '价格' : '人民币价格'" align="center"></el-table-column>
+              <el-table-column prop="unit_info" :label="item.type === 1 ? '价格单位' : '人民币价格单位'" align="center"
+                width="130" />
+              <el-table-column prop="dollar_price" label="美元价格" v-if="item.type === 2" align="center" />
+              <el-table-column prop="dollar_unit_info" label="美元价格单位" v-if="item.type === 2" align="center"
+                width="110" />
+              <el-table-column prop="specs" label="规格" align="center" />
+              <el-table-column prop="package" label="包装" align="center" />
+              <el-table-column prop="salesperson" label="业务员" v-if="item.type === 2" align="center" />
+              <el-table-column prop="period" label="货期" v-if="item.type === 2" align="center" />
+              <el-table-column prop="remark" label="备注" width="200" align="center" />
+              <el-table-column prop="admin_name" label="维护人" align="center" />
+              <el-table-column label="操作" align="center">
                 <template #default="scope">
                   <el-button text type="primary" @click="addPs(scope.row)"
                     v-if="!pkList.includes(scope.row.id)">+比对</el-button>
@@ -1097,7 +1100,7 @@ const fields = [
   { label: "规格", key: "specs" },
   { label: "包装", key: "package" },
   { label: "业务员", key: "salesperson" },
-  { label: "货周", key: "period" },
+  { label: "货期", key: "period" },
   { label: "备注", key: "remark" },
   { label: "维护人", key: "admin_name" }
 ];
