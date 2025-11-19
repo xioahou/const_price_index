@@ -455,13 +455,13 @@
               <div class="th-content">
                 {{ inq.company_title }}
               </div>
-              <el-button link type="danger" class="sort-close" @click="removeInquiry(inq, inquiryColumns)">
+              <!-- <el-button link type="danger" class="sort-close" @click="removeInquiry(iIdx)">
                 <el-icon>
                   <el-icon>
                     <CircleClose />
                   </el-icon>
                 </el-icon>
-              </el-button>
+              </el-button> -->
             </th>
           </tr>
           <tr>
@@ -512,17 +512,17 @@
           <el-checkbox :model-value="isItemChecked(item)" @change="toggleSelect(item)" />
           <el-table :data="item.price_list" style="width: 100%" border>
             <el-table-column prop="time" label="维护时间" width="180" />
-            <el-table-column prop="num" label="数量" width="180" />
+            <el-table-column prop="num" label="数量" width="100" />
             <el-table-column prop="unit" label="单位" />
 
             <el-table-column prop="price" label="价格" />
             <el-table-column prop="unit_info" label="价格单位" />
-            <el-table-column prop="dollar_price" label="美元价格" />
-            <el-table-column prop="dollar_unit_info" label="美元价格单位" />
+            <el-table-column prop="dollar_price" label="美元价格" v-if="item.type === 2" />
+            <el-table-column prop="dollar_unit_info" label="美元价格单位" v-if="item.type === 2" width="110" />
             <el-table-column prop="specs" label="规格" />
             <el-table-column prop="package" label="包装" />
-            <el-table-column prop="salesperson" label="业务员" />
-            <el-table-column prop="period" label="交货周期" />
+            <el-table-column prop="salesperson" label="业务员" v-if="item.type === 2" />
+            <el-table-column prop="period" label="交货周期" v-if="item.type === 2" />
             <el-table-column prop="remark" label="备注" width="200" />
             <el-table-column prop="admin_name" label="维护人" />
             <el-table-column label="操作">
@@ -537,7 +537,7 @@
       <el-button style="margin-top: 10px; width: 100%;" type="primary" @click="pkDilog"
         :disabled="!(selectedIds.length >= 2)">去比对</el-button>
       <div class="his_see">
-        <el-button plain type="primary" style="margin-top: 10px;">最近浏览</el-button>
+        <el-button plain type="primary" style="margin:10px 0;">最近浏览</el-button>
         <el-card v-for="(item, index) in hisCate" :key="index">
           <h1>{{ item.title }}</h1>
           <div class="desc">
@@ -552,8 +552,12 @@
               <el-table-column prop="unit" label="单位" />
               <el-table-column prop="price" label="价格" />
               <el-table-column prop="unit_info" label="价格单位" />
+              <el-table-column prop="dollar_price" label="美元价格" v-if="item.type === 2" />
+              <el-table-column prop="dollar_unit_info" label="美元价格单位" v-if="item.type === 2" />
               <el-table-column prop="specs" label="规格" />
               <el-table-column prop="package" label="包装" />
+              <el-table-column prop="salesperson" label="业务员" v-if="item.type === 2" />
+              <el-table-column prop="period" label="交货周期" v-if="item.type === 2" />
               <el-table-column prop="remark" label="备注" width="200" />
               <el-table-column prop="admin_name" label="维护人" />
               <el-table-column label="操作">
@@ -1134,7 +1138,7 @@ const inquiryColumns = computed(() => {
         company_title: inq.company_title,
         type: inq.type,
         colspan: inq.price_list.length,
-        cas: inq.cas
+        cas: inq.cas,
       });
     });
   });
@@ -1417,79 +1421,205 @@ const tempCancelPk = (product) => {
 //       });
 //     });
 // }
-function removeInquiry(inquiry) {
-  console.log("要删除的企业：", inquiry);
+// function removeInquiry(inquiry, index) {
+//   console.log("要删除的企业：", inquiry);
+//   console.log('要删除的企业', index);
 
-  // 计算总企业数量
-  const totalCompanies = pkListIng.value.reduce((sum, p) => sum + (p.inquiry?.length || 0), 0);
+//   // 计算总企业数量
+//   const totalCompanies = pkListIng.value.reduce((sum, p) => sum + (p.inquiry?.length || 0), 0);
 
-  if (totalCompanies <= 2) {
-    ElMessage.warning("至少需要保留两个企业询价信息!");
-    return;
-  }
+//   if (totalCompanies <= 2) {
+//     ElMessage.warning("至少需要保留两个企业询价信息!");
+//     return;
+//   }
 
-  // 如果“不再提醒”已勾选，则直接执行删除
-  const doDelete = () => {
-    const targetCompany = inquiry.company_title;
-    const targetCas = inquiry.cas;
+//   // 如果“不再提醒”已勾选，则直接执行删除
+//   const doDelete = () => {
+//     const targetCompany = inquiry.company_title;
+//     const targetCas = inquiry.cas;
 
-    // 遍历所有产品并删除匹配的企业
-    pkListIng.value = pkListIng.value
-      .map(p => {
-        if (p.inquiry) {
-          return {
-            ...p,
-            inquiry: p.inquiry.filter(i => !(i.company_title === targetCompany && i.cas === targetCas))
-          };
+//     // 遍历所有产品并删除匹配的企业
+//     pkListIng.value = pkListIng.value
+//       .map(p => {
+//         if (p.inquiry) {
+//           return {
+//             ...p,
+//             inquiry: p.inquiry.filter(i => !(i.company_title === targetCompany && i.cas === targetCas))
+//           };
+//         }
+//         return p;
+//       })
+//       // 删除没有企业的产品
+//       .filter(p => p.inquiry.length > 0);
+//   };
+
+//   if (noConfirmRemovePk.value) {
+//     doDelete();
+//     return;
+//   }
+
+//   ElMessageBox({
+//     title: "移除该比价吗?",
+//     message: `
+//       <div>
+//         <p>移除后，该比价信息将被取消比对</p>
+//         <label style="margin-top: 10px; display:flex; align-items:center;">
+//           <input id="no-more-remove" type="radio" style="margin-right:6px;" />
+//           不再提示
+//         </label>
+//       </div>
+//     `,
+//     dangerouslyUseHTMLString: true,
+//     showCancelButton: true,
+//     confirmButtonText: "立即移除",
+//     cancelButtonText: "我再想想",
+
+//     closeOnClickModal: false,
+
+
+
+//   })
+//     .then(() => {
+//       const checkbox = document.getElementById("no-more-remove");
+//       if (checkbox?.checked) {
+//         noConfirmRemovePk.value = true;
+//         localStorage.setItem("noConfirmRemovePk", "true");
+//       }
+//       doDelete();
+//     })
+//     .catch(() => {
+//       ElMessage({
+//         type: "info",
+//         message: "已取消操作"
+//       });
+//     });
+// }
+
+// function removeInquiry(inquiry, index) {
+//   console.log("要删除的企业：", inquiry);
+//   console.log("全局 price_list 索引：", index);
+
+//   // ##### 统计当前所有 price_list，检查是否可删 #####
+//   const totalCompanies = pkListIng.value.reduce(
+//     (sum, p) => sum + (p.inquiry?.length || 0),
+//     0
+//   );
+
+//   if (totalCompanies <= 2) {
+//     ElMessage.warning("至少需要保留两个企业询价信息!");
+//     return;
+//   }
+
+//   // 实际执行删除
+//   const doDelete = () => {
+//     let current = 0; // 全局 price_list 索引计数器
+
+//     // 遍历 pkListIng
+//     pkListIng.value = pkListIng.value
+//       .map(product => {
+//         const newInquiry = product.inquiry
+//           .map(inq => {
+//             const newPriceList = inq.price_list.filter((pItem, localIdx) => {
+//               const isTarget = current === index;
+//               current++; // 递增全局索引
+
+//               // 如果是需要删除的 price_list，返回 false
+//               return !isTarget;
+//             });
+
+//             // 如果 price_list 删除完为空，剔除 inquiry
+//             if (newPriceList.length === 0) return null;
+
+//             return { ...inq, price_list: newPriceList };
+//           })
+//           .filter(inq => inq !== null);
+
+//         return { ...product, inquiry: newInquiry };
+//       })
+//       // 产品无 inquiry 则删除
+//       .filter(product => product.inquiry.length > 0);
+//   };
+
+//   // “不再提醒”直接删除
+//   if (noConfirmRemovePk.value) {
+//     doDelete();
+//     return;
+//   }
+
+//   // 弹窗确认
+//   ElMessageBox({
+//     title: "移除该报价吗?",
+//     message: `
+//       <div>
+//         <p>移除后，该报价将从比价中删除</p>
+//         <label style="margin-top: 10px; display:flex; align-items:center;">
+//           <input id="no-more-remove" type="radio" style="margin-right:6px;" />
+//           不再提示
+//         </label>
+//       </div>
+//     `,
+//     dangerouslyUseHTMLString: true,
+//     showCancelButton: true,
+//     confirmButtonText: "立即移除",
+//     cancelButtonText: "我再想想",
+//     closeOnClickModal: false,
+//   })
+//     .then(() => {
+//       const checkbox = document.getElementById("no-more-remove");
+//       if (checkbox?.checked) {
+//         noConfirmRemovePk.value = true;
+//         localStorage.setItem("noConfirmRemovePk", "true");
+//       }
+//       doDelete();
+//     })
+//     .catch(() => {
+//       ElMessage({
+//         type: "info",
+//         message: "已取消操作",
+//       });
+//     });
+// }
+function removeInquiry(targetIndex) {
+  console.log("要删除的平铺索引：", targetIndex);
+
+  let count = 0; // 全局累积 index
+
+  for (let p = 0; p < pkListIng.value.length; p++) {
+    const product = pkListIng.value[p];
+
+    for (let i = 0; i < product.inquiry.length; i++) {
+      const inquiry = product.inquiry[i];
+
+      for (let j = 0; j < inquiry.price_list.length; j++) {
+
+        if (count === targetIndex) {
+          // 找到了要删的
+          console.log(
+            `命中：product=${p}, inquiry=${i}, price_list=${j}`,
+            inquiry.price_list[j]
+          );
+
+          inquiry.price_list.splice(j, 1); // 删除
+
+          // 如果该 inquiry 下 price 为空，删除 inquiry
+          if (inquiry.price_list.length === 0) {
+            product.inquiry.splice(i, 1);
+            i--; // 修正索引
+          }
+
+          // 如果该 product 下 inquiry 空了，删除整个 product
+          if (product.inquiry.length === 0) {
+            pkListIng.value.splice(p, 1);
+          }
+
+          return; // 删除完成
         }
-        return p;
-      })
-      // 删除没有企业的产品
-      .filter(p => p.inquiry.length > 0);
-  };
 
-  if (noConfirmRemovePk.value) {
-    doDelete();
-    return;
-  }
-
-  ElMessageBox({
-    title: "移除该比价吗?",
-    message: `
-      <div>
-        <p>移除后，该比价信息将被取消比对</p>
-        <label style="margin-top: 10px; display:flex; align-items:center;">
-          <input id="no-more-remove" type="radio" style="margin-right:6px;" />
-          不再提示
-        </label>
-      </div>
-    `,
-    dangerouslyUseHTMLString: true,
-    showCancelButton: true,
-    confirmButtonText: "立即移除",
-    cancelButtonText: "我再想想",
-
-    closeOnClickModal: false,
-
-
-
-  })
-    .then(() => {
-      const checkbox = document.getElementById("no-more-remove");
-      if (checkbox?.checked) {
-        noConfirmRemovePk.value = true;
-        localStorage.setItem("noConfirmRemovePk", "true");
+        count++; // 累计平铺 index
       }
-      doDelete();
-    })
-    .catch(() => {
-      ElMessage({
-        type: "info",
-        message: "已取消操作"
-      });
-    });
+    }
+  }
 }
-
 
 </script>
 
@@ -1851,6 +1981,7 @@ function removeInquiry(inquiry) {
         display: flex;
         justify-content: space-between;
         margin-left: 20px;
+        margin-bottom: 10px;
       }
     }
   }
