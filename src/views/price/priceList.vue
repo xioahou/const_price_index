@@ -443,7 +443,7 @@
             </th>
           </tr>
           <tr>
-            <th class="field-col">cas号</th>
+            <th class="field-col">CAS</th>
             <th v-for="(p, pIdx) in pkListIng" :key="'cas-' + pIdx" :colspan="productColSpan(p)">
               {{ p.cas }}
             </th>
@@ -522,7 +522,7 @@
             <el-table-column prop="specs" label="规格" />
             <el-table-column prop="package" label="包装" />
             <el-table-column prop="salesperson" label="业务员" v-if="item.type === 2" />
-            <el-table-column prop="period" label="交货周期" v-if="item.type === 2" />
+            <el-table-column prop="period" label="货期" v-if="item.type === 2" />
             <el-table-column prop="remark" label="备注" width="200" />
             <el-table-column prop="admin_name" label="维护人" />
             <el-table-column label="操作">
@@ -1097,7 +1097,7 @@ const fields = [
   { label: "规格", key: "specs" },
   { label: "包装", key: "package" },
   { label: "业务员", key: "salesperson" },
-  { label: "交货周期", key: "period" },
+  { label: "货周", key: "period" },
   { label: "备注", key: "remark" },
   { label: "维护人", key: "admin_name" }
 ];
